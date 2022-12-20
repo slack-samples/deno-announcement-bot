@@ -1,23 +1,24 @@
 import { Manifest } from "deno-slack-sdk/mod.ts";
-import SampleWorkflow from "./workflows/sample_workflow.ts";
-import SampleObjectDatastore from "./datastores/sample_datastore.ts";
+import announcements from "./datastores/announcements.ts";
+import drafts from "./datastores/drafts.ts";
+import Announcement from "./types/announcement.ts";
+import createAnnouncement from "./workflows/create_announcement.ts";
 
-/**
- * The app manifest contains the app's configuration. This
- * file defines attributes like app name and description.
- * https://api.slack.com/future/manifest
- */
 export default Manifest({
-  name: "deno-starter-template",
-  description: "A template for building Slack apps with Deno",
-  icon: "assets/default_new_app_icon.png",
-  workflows: [SampleWorkflow],
+  name: "Announcement Bot",
+  description: "Send an announcement to one or more channels",
+  icon: "assets/icon.png",
   outgoingDomains: [],
-  datastores: [SampleObjectDatastore],
+  datastores: [drafts, announcements],
+  types: [Announcement],
+  workflows: [
+    createAnnouncement,
+  ],
   botScopes: [
     "commands",
     "chat:write",
     "chat:write.public",
+    "chat:write.customize",
     "datastore:read",
     "datastore:write",
   ],

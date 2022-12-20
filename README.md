@@ -1,7 +1,6 @@
-# Deno Starter Template
+# 📯 Announcement Bot
 
-This is a scaffolded Deno template used to build out Slack apps using the Slack
-CLI.
+**A workflow and a set of functions helping users preview & post announcements sent to one or more channels.**
 
 **Guide Outline**:
 
@@ -10,7 +9,7 @@ CLI.
   - [Clone the Template](#clone-the-template)
 - [Create a Link Trigger](#create-a-link-trigger)
 - [Running Your Project Locally](#running-your-project-locally)
-- [Datastores](#datastores)
+- [Usage](#usage)
 - [Testing](#testing)
 - [Deploying Your App](#deploying-your-app)
   - [Viewing Activity Logs](#viewing-activity-logs)
@@ -28,7 +27,7 @@ requires any of [the Slack paid plans](https://slack.com/pricing).
 
 ### Install the Slack CLI
 
-To use this template, you first need to install and configure the Slack CLI.
+To use this sample, you first need to install and configure the Slack CLI.
 Step-by-step instructions can be found in our
 [Quickstart Guide](https://api.slack.com/future/quickstart).
 
@@ -38,10 +37,10 @@ Start by cloning this repository:
 
 ```zsh
 # Clone this project onto your machine
-$ slack create my-app -t slack-samples/deno-starter-template
+$ slack create deno-announcement-bot -t slack-samples/deno-announcement-bot
 
 # Change into this project directory
-$ cd my-app
+$ cd deno-announcement-bot
 ```
 
 ## Create a Link Trigger
@@ -62,11 +61,10 @@ that Shortcut URLs will be different across each workspace, as well as between
 the Workspace that you'd like to create the Trigger in. Each Workspace has a
 development version (denoted by `(dev)`), as well as a deployed version.
 
-To create a Link Trigger for the Workflow in this template, run the following
-command:
+To create a Link Trigger, run the following command:
 
 ```zsh
-$ slack trigger create --trigger-def triggers/sample_trigger.ts
+$ slack trigger create --trigger-def ./triggers/create_announcement.ts
 ```
 
 After selecting a Workspace, the output provided will include the Link Trigger
@@ -90,26 +88,42 @@ $ slack run
 Connected, awaiting events
 ```
 
-Once running, click the
-[previously created Shortcut URL](#create-a-link-trigger) associated with the
-`(dev)` version of your app. This should start the included sample Workflow.
+Once running, [previously created Shortcut URLs](#create-a-link-trigger)
+associated with the `(dev)` version of your app can be used to start Workflows.
 
 To stop running locally, press `<CTRL> + C` to end the process.
 
-## Datastores
+## Usage
 
-If your app needs to store any data, a datastore would be the right place for
-that. For an example of a datastore, see `datastores/sample_datastore.ts`. Using
-a datastore also requires the `datastore:write`/`datastore:read` scopes to be
-present in your manifest.
+With your app running locally, click the link trigger that you shared in your Slack workspace. The workflow's first step, an input form, will appear where you can completed the required fields.
+
+If you'd like, you can compose an announcement using [Block Kit Builder](https://app.slack.com/block-kit-builder) instead of plain text or [mrkdwn](https://api.slack.com/reference/surfaces/formatting).
+
+Here is the format of the blocks that the app expects:
+
+```json
+{
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "This is an important announcement!",
+      },
+    },
+  ],
+};
+```
+
+Submitting the form will post the message and other details to the draft channel you provided.
+
+Use the overflow menu found in the draft message to edit the announcement text. Once ready, click the **Send Announcement** button to post the announcement in each channel you previously provided in the form.
+
+Once sent, the draft message in channel will be updated and a summary (with links) will be posted to the thread.
 
 ## Testing
 
-For an example of how to test a function, see
-`functions/sample_function_test.ts`. Test filenames should be suffixed with
-`_test`.
-
-Run all tests with `deno test`:
+Test filenames should be suffixed with `_test`. Run all tests with `deno test`:
 
 ```zsh
 $ deno test
@@ -124,9 +138,10 @@ app to Slack hosting using `slack deploy`:
 $ slack deploy
 ```
 
-After deploying, [create a new Link Trigger](#create-a-link-trigger) for the
-production version of your app (not appended with `(dev)`). Once the Trigger is
-invoked, the Workflow should run just as it did in when developing locally.
+After deploying, [create new Link Triggers](#create-a-link-trigger) for the
+production version of your app (not appended with `(dev)`). Once the Triggers
+are invoked, the associated Workflows should run just as they did when
+developing locally.
 
 ### Viewing Activity Logs
 
