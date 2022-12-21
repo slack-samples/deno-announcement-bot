@@ -1,6 +1,6 @@
 import { Manifest } from "deno-slack-sdk/mod.ts";
-import announcements from "./datastores/announcements.ts";
-import drafts from "./datastores/drafts.ts";
+import AnnouncementDatastore from "./datastores/announcements.ts";
+import DraftDatastore from "./datastores/drafts.ts";
 import Announcement from "./types/announcement.ts";
 import createAnnouncement from "./workflows/create_announcement.ts";
 
@@ -9,7 +9,7 @@ export default Manifest({
   description: "Send an announcement to one or more channels",
   icon: "assets/icon.png",
   outgoingDomains: [],
-  datastores: [drafts, announcements],
+  datastores: [DraftDatastore, AnnouncementDatastore],
   types: [Announcement],
   workflows: [
     createAnnouncement,

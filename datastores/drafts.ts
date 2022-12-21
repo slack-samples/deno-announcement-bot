@@ -1,6 +1,6 @@
 import { DefineDatastore, Schema } from "deno-slack-sdk/mod.ts";
 
-const drafts = DefineDatastore({
+export default DefineDatastore({
   name: "drafts",
   primary_key: "id",
   attributes: {
@@ -36,5 +36,3 @@ const drafts = DefineDatastore({
     },
   },
 });
-
-export default drafts;
