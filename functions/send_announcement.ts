@@ -109,6 +109,7 @@ export default SlackFunction(
         typeof drafts.definition
       >({
         datastore: "drafts",
+        //@ts-expect-error expecting fix
         item: {
           id: inputs.draftId,
           status: DraftStatus.Sent,

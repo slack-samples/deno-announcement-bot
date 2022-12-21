@@ -80,6 +80,7 @@ export default SlackFunction(
 
     await client.apps.datastore.put<typeof drafts.definition>({
       datastore: "drafts",
+      //@ts-ignore expecting fix
       item: {
         id: id,
         created_by: inputs.created_by,
@@ -118,6 +119,7 @@ export default SlackFunction(
     // Update datastore with the timestamp of the draft message
     await client.apps.datastore.put<typeof drafts.definition>({
       datastore: "drafts",
+      //@ts-expect-error expecting fix
       item: {
         id: id,
         message_ts: postDraft.ts,
