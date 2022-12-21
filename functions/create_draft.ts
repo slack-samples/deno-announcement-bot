@@ -54,7 +54,7 @@ export const createDraft = DefineFunction({
   },
   output_parameters: {
     properties: {
-      draftId: {
+      draft_id: {
         type: Schema.types.string,
         description: "Datastore identifier for the draft",
       },
@@ -67,7 +67,7 @@ export const createDraft = DefineFunction({
         description: "The timestamp of the draft message in the Slack channel",
       },
     },
-    required: ["draftId", "message", "message_ts"],
+    required: ["draft_id", "message", "message_ts"],
   },
 });
 
@@ -227,7 +227,7 @@ export default SlackFunction(
       const outputs = {
         message: item.message,
         message_ts: item.message_ts,
-        draftId: id,
+        draft_id: id,
       };
 
       // Complete function so workflow can continue

@@ -32,7 +32,7 @@ export const sendAnnouncement = DefineFunction({
         items: {
           type: Schema.slack.types.channel_id,
         },
-        description: "The audience group of the announcement",
+        description: "The destination channels of the announcement",
       },
       icon: {
         type: Schema.types.string,
@@ -42,7 +42,7 @@ export const sendAnnouncement = DefineFunction({
         type: Schema.types.string,
         description: "Optional custom bot emoji avatar to use in announcements",
       },
-      draftId: {
+      draft_id: {
         type: Schema.types.string,
         description: "The datastore ID of the draft message if one was created",
       },
@@ -75,10 +75,10 @@ export default SlackFunction(
     // Array to gather chat.postMessage responses
     const chatPostMessagePromises: Promise<any>[] = [];
 
-    // Incoming draftId to link all announcements that are
-    // part of the same draft. If a draftId was not provided,
+    // Incoming draft_id to link all announcements that are
+    // part of the same draft. If a draft_id was not provided,
     // create a new identifier to group these announcements.
-    const draftId = inputs.draftId || crypto.randomUUID();
+    const draft_id = inputs.draft_id || crypto.randomUUID();
 
     const blocks = renderAnnouncementBlocks(inputs.message);
 
@@ -97,21 +97,21 @@ export default SlackFunction(
         params.username = inputs.username;
       }
 
-      const announcement = SendAndSaveAnnouncement(token, params, draftId);
+      const announcement = SendAndSaveAnnouncement(token, params, draft_id);
       chatPostMessagePromises.push(announcement);
     }
 
     const announcements = await Promise.all(chatPostMessagePromises);
 
     // Update draft message if one was created
-    if (inputs.draftId) {
+    if (inputs.draft_id) {
       const { item } = await client.apps.datastore.put<
         typeof drafts.definition
       >({
         datastore: "drafts",
         //@ts-expect-error expecting fix
         item: {
-          id: inputs.draftId,
+          id: inputs.draft_id,
           status: DraftStatus.Sent,
         },
       });

@@ -1,5 +1,10 @@
 import { DefineDatastore, Schema } from "deno-slack-sdk/mod.ts";
 
+/**
+ * Datastores are a Slack-hosted location to store
+ * and retrieve data for your app.
+ * https://api.slack.com/future/datastores
+ */
 export default DefineDatastore({
   name: "drafts",
   primary_key: "id",
@@ -32,7 +37,7 @@ export default DefineDatastore({
       type: Schema.types.string,
     },
     status: {
-      type: Schema.types.string, // draft, sent
+      type: Schema.types.string, // possible statuses are draft, sent
     },
   },
 });

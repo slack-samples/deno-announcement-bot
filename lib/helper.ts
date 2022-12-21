@@ -27,14 +27,14 @@ export enum DraftStatus {
  * This method send an announcement to a channel, gets its permalink, and stores the details in the datastore
  * @param token credential used for Slack API requests
  * @param params parameters used in the chat.postMessage request
- * @param draftId ID of the draft announcement that is being posted
+ * @param draft_id ID of the draft announcement that is being posted
  * @returns promise with summary
  */
 
 export async function SendAndSaveAnnouncement(
   token: string,
   params: ChatPostMessageParams,
-  draftId: string,
+  draft_id: string,
 ): Promise<AnnouncementType> {
   const client = SlackAPI(token, {});
 
@@ -72,7 +72,7 @@ export async function SendAndSaveAnnouncement(
     datastore: "announcements",
     item: {
       id: crypto.randomUUID(),
-      draft_id: draftId,
+      draft_id: draft_id,
       success: post.ok,
       error_message: post.error,
       channel: post.channel,

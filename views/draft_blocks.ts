@@ -1,5 +1,5 @@
 export const renderDraftBlocks = (
-  draftId: string,
+  draft_id: string,
   created_by: string,
   message: string,
   channels: string[],
@@ -19,7 +19,7 @@ export const renderDraftBlocks = (
     },
     {
       "type": "actions",
-      "block_id": `${draftId}`,
+      "block_id": `${draft_id}`,
       "elements": [
         {
           "type": "button",
