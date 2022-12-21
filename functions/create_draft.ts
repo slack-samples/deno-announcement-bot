@@ -7,7 +7,7 @@ import { renderConfirmSendModal } from "../views/confirm_send_modal.ts";
 import { renderDraftBlocks } from "../views/draft_blocks.ts";
 import { renderEditModal } from "../views/edit_modal.ts";
 
-import { ChatPostMessageParams } from "../lib/helper.ts";
+import { ChatPostMessageParams, DraftStatus } from "../lib/helper.ts";
 
 export const createDraft = DefineFunction({
   callback_id: "create_draft",
@@ -88,7 +88,7 @@ export default SlackFunction(
         channel: inputs.channel,
         icon: inputs.icon,
         username: inputs.username,
-        status: "draft",
+        status: DraftStatus.Draft,
       },
     });
 

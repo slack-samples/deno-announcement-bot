@@ -9,6 +9,7 @@ import Announcement from "../types/announcement.ts";
 
 import {
   ChatPostMessageParams,
+  DraftStatus,
   SendAndSaveAnnouncement,
 } from "../lib/helper.ts";
 import { renderSentBlocks } from "../views/sent_blocks.ts";
@@ -110,7 +111,7 @@ export default SlackFunction(
         datastore: "drafts",
         item: {
           id: inputs.draftId,
-          status: "sent",
+          status: DraftStatus.Sent,
         },
       });
 

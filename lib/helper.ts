@@ -18,6 +18,11 @@ export type AnnouncementType = {
   error?: string;
 };
 
+export enum DraftStatus {
+  Draft = "draft",
+  Sent = "sent",
+}
+
 /**
  * This method send an announcement to a channel, gets its permalink, and stores the details in the datastore
  * @param token credential used for Slack API requests
