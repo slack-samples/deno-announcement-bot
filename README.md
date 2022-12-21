@@ -98,7 +98,7 @@ To stop running locally, press `<CTRL> + C` to end the process.
 
 With your app running locally, click the link trigger that you shared in your Slack workspace. The workflow's first step, an input form, will appear where you can completed the required fields.
 
-If you'd like, you can compose an announcement using [Block Kit Builder](https://app.slack.com/block-kit-builder) instead of plain text or [mrkdwn](https://api.slack.com/reference/surfaces/formatting).
+If you'd like, you can compose an announcement using [Block Kit Builder](https://app.slack.com/block-kit-builder) instead of plain text or [mrkdwn](https://api.slack.com/reference/surfaces/formatting). Tip: Use the "Copy Payload" button to copy your Block Kit directly to your clipboard. 
 
 Here is the format of the blocks that the app expects:
 
@@ -109,10 +109,10 @@ Here is the format of the blocks that the app expects:
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "This is an important announcement!",
-      },
-    },
-  ],
+        "text": "_This_ is an *important* announcement!"
+      }
+    }
+  ]
 }
 ```
 
