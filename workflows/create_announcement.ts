@@ -25,9 +25,9 @@ const form = createAnnouncement
   .addStep(Schema.slack.functions.OpenForm, {
     title: "Create an announcement",
     description:
-      "Create a draft announcement and preview & edit in channel before sending.",
+      "Create a draft announcement. You will have the opportunity to preview & edit it in channel before sending.\n\n_Want to create a richer announcement? Use <https://app.slack.com/block-kit-builder|Block Kit Builder> and paste the full payload into the message input below._",
     interactivity: createAnnouncement.inputs.interactivity,
-    submit_label: "Draft announcement",
+    submit_label: "Preview",
     fields: {
       elements: [{
         name: "message",
@@ -37,7 +37,7 @@ const form = createAnnouncement
         long: true,
       }, {
         name: "channels",
-        title: "Channels",
+        title: "Destination channels",
         type: Schema.types.array,
         items: {
           type: Schema.slack.types.channel_id,
@@ -48,13 +48,13 @@ const form = createAnnouncement
         title: "Draft channel",
         type: Schema.slack.types.channel_id,
         description:
-          "The channel where you and your team can preview the announcement before sending",
+          "The channel where you and your team can preview & edit the announcement before sending",
       }, {
         name: "icon",
-        title: "Custom icon",
+        title: "Custom emoji icon",
         type: Schema.types.string,
         description:
-          "Emoji to override the default app icon. e.g. &colon;robot_face&colon;",
+          "Emoji to override the default app icon. Must use the format &colon;robot_face&colon; to be applied correctly.",
       }, {
         name: "username",
         title: "Custom username",
