@@ -1,7 +1,7 @@
 import { Manifest } from "deno-slack-sdk/mod.ts";
 import AnnouncementDatastore from "./datastores/announcements.ts";
 import DraftDatastore from "./datastores/drafts.ts";
-import Announcement from "./types/announcement.ts";
+import { AnnouncementCustomType } from "./functions/post_summary/types.ts";
 import createAnnouncement from "./workflows/create_announcement.ts";
 
 export default Manifest({
@@ -10,7 +10,7 @@ export default Manifest({
   icon: "assets/icon.png",
   outgoingDomains: [],
   datastores: [DraftDatastore, AnnouncementDatastore],
-  types: [Announcement],
+  types: [AnnouncementCustomType],
   workflows: [
     createAnnouncement,
   ],
