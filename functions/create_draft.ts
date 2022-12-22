@@ -3,9 +3,9 @@ import { SlackAPI } from "deno-slack-api/mod.ts";
 
 import drafts from "../datastores/drafts.ts";
 
-import { renderConfirmSendModal } from "../views/confirm_send_modal.ts";
-import { renderDraftBlocks } from "../views/draft_blocks.ts";
-import { renderEditModal } from "../views/edit_modal.ts";
+import { buildConfirmSendModal } from "../views/confirm_send_modal.ts";
+import { buildDraftBlocks } from "../views/draft_blocks.ts";
+import { buildEditModal } from "../views/edit_modal.ts";
 
 import { ChatPostMessageParams, DraftStatus } from "../lib/helper.ts";
 
@@ -93,7 +93,7 @@ export default SlackFunction(
       },
     });
 
-    const blocks = renderDraftBlocks(
+    const blocks = buildDraftBlocks(
       id,
       inputs.created_by,
       inputs.message,
@@ -146,7 +146,7 @@ export default SlackFunction(
           },
         );
 
-        const view = renderEditModal(
+        const view = buildEditModal(
           id,
           item.message,
           body.message?.ts || "",
@@ -178,7 +178,7 @@ export default SlackFunction(
         },
       });
 
-      const blocks = renderDraftBlocks(
+      const blocks = buildDraftBlocks(
         id,
         inputs.created_by,
         message,
@@ -199,7 +199,7 @@ export default SlackFunction(
 
       const id = action.block_id;
 
-      const view = renderConfirmSendModal(id, inputs.channels);
+      const view = buildConfirmSendModal(id, inputs.channels);
 
       await client.views.open({
         trigger_id: body.interactivity.interactivity_pointer,

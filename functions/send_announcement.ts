@@ -12,9 +12,9 @@ import {
   DraftStatus,
   SendAndSaveAnnouncement,
 } from "../lib/helper.ts";
-import { renderSentBlocks } from "../views/sent_blocks.ts";
+import { buildSentBlocks } from "../views/sent_blocks.ts";
 import drafts from "../datastores/drafts.ts";
-import { renderAnnouncementBlocks } from "../views/announcement_blocks.ts";
+import { buildAnnouncementBlocks } from "../views/announcement_blocks.ts";
 
 export const sendAnnouncement = DefineFunction({
   callback_id: "send_announcement",
@@ -80,7 +80,7 @@ export default SlackFunction(
     // create a new identifier to group these announcements.
     const draft_id = inputs.draft_id || crypto.randomUUID();
 
-    const blocks = renderAnnouncementBlocks(inputs.message);
+    const blocks = buildAnnouncementBlocks(inputs.message);
 
     for (const channel of inputs.channels) {
       const params = {
@@ -116,7 +116,7 @@ export default SlackFunction(
         },
       });
 
-      const blocks = renderSentBlocks(
+      const blocks = buildSentBlocks(
         item.created_by,
         inputs.message,
         inputs.channels,

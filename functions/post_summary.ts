@@ -5,7 +5,7 @@ import {
   SlackFunction,
 } from "deno-slack-sdk/mod.ts";
 import Announcement from "../types/announcement.ts";
-import { renderSummaryMessage } from "../views/summary_message.ts";
+import { buildSummaryMessage } from "../views/summary_message.ts";
 
 export const postSummary = DefineFunction({
   callback_id: "post_summary",
@@ -55,7 +55,7 @@ export default SlackFunction(
   async ({ inputs, token }) => {
     const client = SlackAPI(token, {});
 
-    const blocks = renderSummaryMessage(inputs.announcements);
+    const blocks = buildSummaryMessage(inputs.announcements);
 
     const summary = await client.chat.postMessage({
       channel: inputs.channel,

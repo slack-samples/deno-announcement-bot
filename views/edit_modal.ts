@@ -1,4 +1,4 @@
-export const renderEditModal = (
+export const buildEditModal = (
   id: string,
   message: string,
   thread_ts: string,

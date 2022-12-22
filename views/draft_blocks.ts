@@ -1,4 +1,4 @@
-export const renderDraftBlocks = (
+export const buildDraftBlocks = (
   draft_id: string,
   created_by: string,
   message: string,
