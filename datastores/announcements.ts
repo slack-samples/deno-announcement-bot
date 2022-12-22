@@ -1,6 +1,11 @@
 import { DefineDatastore, Schema } from "deno-slack-sdk/mod.ts";
 
-const announcements = DefineDatastore({
+/**
+ * Datastores are a Slack-hosted location to store
+ * and retrieve data for your app.
+ * https://api.slack.com/future/datastores
+ */
+export default DefineDatastore({
   name: "announcements",
   primary_key: "id",
   attributes: {
@@ -24,5 +29,3 @@ const announcements = DefineDatastore({
     },
   },
 });
-
-export default announcements;

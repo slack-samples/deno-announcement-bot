@@ -1,6 +1,7 @@
 # 📯 Announcement Bot
 
-**A next-gen app helping users send announcements to one or more channels in their workspace.**
+**A next-gen app helping users send announcements to one or more channels in
+their workspace.**
 
 **Guide Outline**:
 
@@ -96,9 +97,14 @@ To stop running locally, press `<CTRL> + C` to end the process.
 
 ## Usage
 
-With your app running locally, click the link trigger that you shared in your Slack workspace. The workflow's first step, an input form, will appear where you can completed the required fields.
+With your app running locally, click the link trigger that you shared in your
+Slack workspace. The workflow's first step, an input form, will appear where you
+can completed the required fields.
 
-If you'd like, you can compose an announcement using [Block Kit Builder](https://app.slack.com/block-kit-builder) instead of plain text or [mrkdwn](https://api.slack.com/reference/surfaces/formatting).
+If you'd like, you can compose an announcement using
+[Block Kit Builder](https://app.slack.com/block-kit-builder) instead of plain
+text or [mrkdwn](https://api.slack.com/reference/surfaces/formatting). Tip: Use
+the "Copy Payload" button to copy your Block Kit directly to your clipboard.
 
 Here is the format of the blocks that the app expects:
 
@@ -109,23 +115,34 @@ Here is the format of the blocks that the app expects:
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "This is an important announcement!",
-      },
-    },
-  ],
+        "text": "_This_ is an *important* announcement!"
+      }
+    }
+  ]
 }
 ```
 
-Submitting the form will post the message and other details to the draft channel you provided.
+Submitting the form will post the message and other details to the draft channel
+you provided.
 
-Use the overflow menu found in the draft message to edit the announcement text. Once ready, click the **Send Announcement** button to post the announcement in each channel you previously provided in the form.
+Use the overflow menu found in the draft message to edit the announcement text.
+Once ready, click the **Send Announcement** button to post the announcement in
+each channel you previously provided in the form.
 
-Once sent, the draft message in channel will be updated and a summary (with links) will be posted to the thread.
+Once sent, the draft message in channel will be updated and a summary (with
+links) will be posted to the thread.
 
 ### Notes
 
-- Private channels, DM, and MPDMs are not supported in either the destination channels or the draft channel select menus in the [OpenForm](https://api.slack.com/future/functions#open-a-form) built-in function.
-- A common reason an announcement might fail to send to a destination channel is that [posting has been restricted](https://slack.com/help/articles/360004635551) (`restricted_action` error). Give your app explicit permission to post using the channel settings if necessary.
+- Private channels, DM, and MPDMs are not supported in either the destination
+  channels or the draft channel select menus in the
+  [OpenForm](https://api.slack.com/future/functions#open-a-form) built-in
+  function.
+- A common reason an announcement might fail to send to a destination channel is
+  that
+  [posting has been restricted](https://slack.com/help/articles/360004635551)
+  (`restricted_action` error). Give your app explicit permission to post using
+  the channel settings if necessary.
 
 ## Testing
 

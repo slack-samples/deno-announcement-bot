@@ -1,4 +1,4 @@
-export const renderAnnouncementBlocks = (
+export const buildAnnouncementBlocks = (
   message: string,
 ) => {
   let blocks = [];

@@ -1,4 +1,4 @@
-export const renderConfirmSendModal = (
+export const buildConfirmSendModal = (
   id: string,
   channels: string[],
 ) => {

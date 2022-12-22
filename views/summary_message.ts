@@ -1,6 +1,6 @@
 import { AnnouncementType } from "../lib/helper.ts";
 
-export const renderSummaryMessage = (
+export const buildSummaryMessage = (
   summaries: AnnouncementType[],
 ) => {
   //

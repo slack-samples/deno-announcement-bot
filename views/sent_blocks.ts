@@ -1,4 +1,4 @@
-export const renderSentBlocks = (
+export const buildSentBlocks = (
   created_by: string,
   message: string,
   channels: string[],

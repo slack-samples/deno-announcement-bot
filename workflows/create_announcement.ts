@@ -3,6 +3,14 @@ import { createDraft } from "../functions/create_draft.ts";
 import { postSummary } from "../functions/post_summary.ts";
 import { sendAnnouncement } from "../functions/send_announcement.ts";
 
+/**
+ * A Workflow is a set of steps that are executed in order.
+ * Each step in a Workflow is a function.
+ * https://api.slack.com/future/workflows
+ *
+ * This workflow uses interactivity. Learn more at:
+ * https://api.slack.com/future/forms#add-interactivity
+ */
 const createAnnouncement = DefineWorkflow({
   callback_id: "create_announcement",
   title: "Create an announcement",
@@ -21,6 +29,9 @@ const createAnnouncement = DefineWorkflow({
   },
 });
 
+// Step 1: Open a form to create an announcement using built-in Function, OpenForm
+// For more on built-in functions
+// https://api.slack.com/future/functions#built-in-functions
 const form = createAnnouncement
   .addStep(Schema.slack.functions.OpenForm, {
     title: "Create an announcement",
@@ -37,7 +48,7 @@ const form = createAnnouncement
         long: true,
       }, {
         name: "channels",
-        title: "Destination channels",
+        title: "Destination channel(s)",
         type: Schema.types.array,
         items: {
           type: Schema.slack.types.channel_id,
@@ -65,6 +76,9 @@ const form = createAnnouncement
     },
   });
 
+// Step 2: Create a draft announcement
+// This step uses a custom function published by this app
+// https://api.slack.com/future/functions/custom
 const draft = createAnnouncement.addStep(createDraft, {
   created_by: createAnnouncement.inputs.created_by,
   message: form.outputs.fields.message,
@@ -74,14 +88,16 @@ const draft = createAnnouncement.addStep(createDraft, {
   username: form.outputs.fields.username,
 });
 
+// Step 3: Send announcement
 const send = createAnnouncement.addStep(sendAnnouncement, {
   message: draft.outputs.message,
   channels: form.outputs.fields.channels,
   icon: form.outputs.fields.icon,
   username: form.outputs.fields.username,
-  draftId: draft.outputs.draftId,
+  draft_id: draft.outputs.draft_id,
 });
 
+// Step 4: Post summary of announcement
 createAnnouncement.addStep(postSummary, {
   announcements: send.outputs.announcements,
   channel: form.outputs.fields.channel,

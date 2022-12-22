@@ -3,11 +3,11 @@ import { SlackAPI } from "deno-slack-api/mod.ts";
 
 import drafts from "../datastores/drafts.ts";
 
-import { renderConfirmSendModal } from "../views/confirm_send_modal.ts";
-import { renderDraftBlocks } from "../views/draft_blocks.ts";
-import { renderEditModal } from "../views/edit_modal.ts";
+import { buildConfirmSendModal } from "../views/confirm_send_modal.ts";
+import { buildDraftBlocks } from "../views/draft_blocks.ts";
+import { buildEditModal } from "../views/edit_modal.ts";
 
-import { ChatPostMessageParams } from "../lib/helper.ts";
+import { ChatPostMessageParams, DraftStatus } from "../lib/helper.ts";
 
 export const createDraft = DefineFunction({
   callback_id: "create_draft",
@@ -54,7 +54,7 @@ export const createDraft = DefineFunction({
   },
   output_parameters: {
     properties: {
-      draftId: {
+      draft_id: {
         type: Schema.types.string,
         description: "Datastore identifier for the draft",
       },
@@ -67,7 +67,7 @@ export const createDraft = DefineFunction({
         description: "The timestamp of the draft message in the Slack channel",
       },
     },
-    required: ["draftId", "message", "message_ts"],
+    required: ["draft_id", "message", "message_ts"],
   },
 });
 
@@ -80,6 +80,7 @@ export default SlackFunction(
 
     await client.apps.datastore.put<typeof drafts.definition>({
       datastore: "drafts",
+      //@ts-ignore expecting fix
       item: {
         id: id,
         created_by: inputs.created_by,
@@ -88,11 +89,11 @@ export default SlackFunction(
         channel: inputs.channel,
         icon: inputs.icon,
         username: inputs.username,
-        status: "draft",
+        status: DraftStatus.Draft,
       },
     });
 
-    const blocks = renderDraftBlocks(
+    const blocks = buildDraftBlocks(
       id,
       inputs.created_by,
       inputs.message,
@@ -118,6 +119,7 @@ export default SlackFunction(
     // Update datastore with the timestamp of the draft message
     await client.apps.datastore.put<typeof drafts.definition>({
       datastore: "drafts",
+      //@ts-expect-error expecting fix
       item: {
         id: id,
         message_ts: postDraft.ts,
@@ -144,7 +146,7 @@ export default SlackFunction(
           },
         );
 
-        const view = renderEditModal(
+        const view = buildEditModal(
           id,
           item.message,
           body.message?.ts || "",
@@ -176,7 +178,7 @@ export default SlackFunction(
         },
       });
 
-      const blocks = renderDraftBlocks(
+      const blocks = buildDraftBlocks(
         id,
         inputs.created_by,
         message,
@@ -197,7 +199,7 @@ export default SlackFunction(
 
       const id = action.block_id;
 
-      const view = renderConfirmSendModal(id, inputs.channels);
+      const view = buildConfirmSendModal(id, inputs.channels);
 
       await client.views.open({
         trigger_id: body.interactivity.interactivity_pointer,
@@ -225,7 +227,7 @@ export default SlackFunction(
       const outputs = {
         message: item.message,
         message_ts: item.message_ts,
-        draftId: id,
+        draft_id: id,
       };
 
       // Complete function so workflow can continue
