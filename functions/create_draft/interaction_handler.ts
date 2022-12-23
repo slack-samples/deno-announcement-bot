@@ -37,27 +37,32 @@ export const OpenDraftEditView = async ({ body, action, client }) => {
     } catch (error) {
       const draftGetErrorMsg = `Error getting draft with id ${id}. Error detail: ${error}`;
       console.log(draftGetErrorMsg);
-      // TODO: Add a completeError call here
-      // await client.functions.completeError()
+
+      await client.functions.completeError({
+        function_execution_id: body.function_data.execution_id,
+        error: draftGetErrorMsg,
+      });
     }
 
     // Open the draft edit modal view
     try {
       await client.views.open({
-        // TODO: Change this to interactivity pointer
-        trigger_id: body.interactivity.interactivity_pointer,
+        interactivity_pointer: body.interactivity.interactivity_pointer,
         view: editModalView,
       });
     } catch (error) {
       const draftEditModalErrorMsg = `Error opening up the draft edit modal view. Error detail ${error}`;
       console.log(draftEditModalErrorMsg);
-      // TODO: Add a completeError call here
-      // await client.functions.completeError()
+     
+      await client.functions.completeError({
+        function_execution_id: body.function_data.execution_id,
+        error: draftEditModalErrorMsg,
+      });
     }
   }
 };
 
-export const SaveDraftEditSubmission = async ({ inputs, view, client }) => {
+export const SaveDraftEditSubmission = async ({ inputs, view, client, body }) => {
 
   // Get the datastore draft ID from the modal's private metadata
   const { id, thread_ts } = JSON.parse(view.private_metadata || "");
@@ -76,7 +81,11 @@ export const SaveDraftEditSubmission = async ({ inputs, view, client }) => {
   } catch (error) {
     const updateDraftMessageErrorMsg = `Error updating draft ${id} message. Error detail ${error}`;
     console.log(updateDraftMessageErrorMsg);
-    // TODO complete with error
+
+    await client.functions.completeError({
+      function_execution_id: body.function_data.execution_id,
+      error: updateDraftMessageErrorMsg,
+    });
   }
 
   const blocks = buildDraftBlocks(
@@ -94,7 +103,12 @@ export const SaveDraftEditSubmission = async ({ inputs, view, client }) => {
     });
   } catch (error) {
     const updateDraftPreviewErrorMsg = `Error updating message: ${ts} in channel ${inputs.channel}. Error detail: ${error}`;
-    // TODO complete with error
+    console.log(updateDraftPreviewErrorMsg)
+
+    await client.functions.completeError({
+      function_execution_id: body.function_data.execution_id,
+      error: updateDraftPreviewErrorMsg,
+    });
   }
 };
 
@@ -104,7 +118,7 @@ export const ConfirmAnnouncementForSend = async ({ inputs, body, action, client 
   const view = buildConfirmSendModal(id, inputs.channels);
 
   await client.views.open({
-    trigger_id: body.interactivity.interactivity_pointer,
+    interactivity_pointer: body.interactivity.interactivity_pointer,
     view: view,
   });
 };
@@ -148,6 +162,10 @@ export const SendAnnouncement =  async ({ body, view, client }) => {
   } catch (error) {
     const draftGetErrorMsg = `Failed to fetch draft announcement id: ${id} for send. Error detail ${error}`;
     console.log(draftGetErrorMsg);
-    // TODO complete with an error 
+
+    await client.functions.completeError({
+      function_execution_id: body.function_data.execution_id,
+      error: draftGetErrorMsg
+    })
   }
 };
