@@ -1,4 +1,5 @@
 import { AnnouncementType } from "./types.ts";
+import { SectionBlock } from "https://cdn.skypack.dev/@slack/types?dts";
 
 /**
  * These are helper utilities that assemble Block Kit block
@@ -12,9 +13,8 @@ import { AnnouncementType } from "./types.ts";
 export const buildSummaryMessage = (
   summaries: AnnouncementType[],
 ) => {
-  //
 
-  const blocks = [
+  const blocks: SectionBlock = [
     {
       "type": "section",
       "text": {
@@ -22,7 +22,7 @@ export const buildSummaryMessage = (
         "text": `*Summary:*`,
       },
     },
-  ] as any;
+  ];
 
   for (const announcement of summaries) {
     // There is a limit of 50 blocks in a single message payload

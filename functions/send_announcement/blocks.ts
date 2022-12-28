@@ -1,3 +1,4 @@
+import { Block } from "https://cdn.skypack.dev/@slack/types?dts";
 /**
  * These are helper utilities that assemble Block Kit block
  * payloads needed for this SendAnnouncement function
@@ -50,8 +51,7 @@ export const buildSentBlocks = (
     {
       "type": "divider",
     },
-    // deno-lint-ignore no-explicit-any
-  ] as any[];
+  ] as Block[];
 
   try {
     // If this succeeds, input message is likely blocks

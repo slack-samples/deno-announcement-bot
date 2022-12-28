@@ -19,8 +19,7 @@ export const buildSentBlocks = (
     {
       "type": "divider",
     },
-    // deno-lint-ignore no-explicit-any
-  ] as any[];
+  ] as Block[];
 
   try {
     // If this succeeds, input message is likely blocks

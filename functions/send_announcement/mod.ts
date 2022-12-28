@@ -1,4 +1,6 @@
+
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
+import { SlackAPI } from "deno-slack-api/mod.ts";
 
 import { SendAnnouncementFunction } from "./definition.ts";
 import { buildAnnouncementBlocks, buildSentBlocks } from "./blocks.ts";
@@ -16,6 +18,7 @@ export default SlackFunction(
   async ({ inputs, client }) => {
 
     // Array to gather chat.postMessage responses
+    // deno-lint-ignore no-explicit-any
     const chatPostMessagePromises: Promise<any>[] = [];
 
     // Incoming draft_id to link all announcements that are
@@ -86,7 +89,7 @@ export default SlackFunction(
 async function sendAndSaveAnnouncement(
   params: ChatPostMessageParams,
   draft_id: string,
-  client: any,
+  client: SlackAPI,
 ): Promise<AnnouncementType> {
 
   let announcement: AnnouncementType;

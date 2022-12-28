@@ -1,3 +1,5 @@
+import { Block }  from "https://cdn.skypack.dev/@slack/types?dts";
+
 /**
  * Helpful types and structures
 */
@@ -5,7 +7,7 @@
 export type ChatPostMessageParams = {
   channel: string;
   thread_ts?: string;
-  blocks: any[];
+  blocks: Block[];
   text?: string;
   icon_emoji?: string;
   username?: string;

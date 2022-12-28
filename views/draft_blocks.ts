@@ -1,3 +1,5 @@
+import { Block } from "https://cdn.skypack.dev/@slack/types?dts";
+
 export const buildDraftBlocks = (
   draft_id: string,
   created_by: string,
@@ -58,8 +60,7 @@ export const buildDraftBlocks = (
         },
       ],
     },
-    // deno-lint-ignore no-explicit-any
-  ] as any[];
+  ] as Block[];
 
   try {
     // If this succeeds, input message is likely blocks
