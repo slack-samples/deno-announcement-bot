@@ -11,7 +11,7 @@ import { SendAnnouncementFunction }  from '../functions/send_announcement/defini
  * This workflow uses interactivity. Learn more at:
  * https://api.slack.com/future/forms#add-interactivity
  */
-const createAnnouncement = DefineWorkflow({
+const CreateAnnouncement = DefineWorkflow({
   callback_id: "create_announcement",
   title: "Create an announcement",
   description:
@@ -32,12 +32,12 @@ const createAnnouncement = DefineWorkflow({
 // Step 1: Open a form to create an announcement using built-in Function, OpenForm
 // For more on built-in functions
 // https://api.slack.com/future/functions#built-in-functions
-const form = createAnnouncement
+const form = CreateAnnouncement
   .addStep(Schema.slack.functions.OpenForm, {
     title: "Create an announcement",
     description:
       "Create a draft announcement. You will have the opportunity to preview & edit it in channel before sending.\n\n_Want to create a richer announcement? Use <https://app.slack.com/block-kit-builder|Block Kit Builder> and paste the full payload into the message input below._",
-    interactivity: createAnnouncement.inputs.interactivity,
+    interactivity: CreateAnnouncement.inputs.interactivity,
     submit_label: "Preview",
     fields: {
       elements: [{
@@ -79,8 +79,8 @@ const form = createAnnouncement
 // Step 2: Create a draft announcement
 // This step uses a custom function published by this app
 // https://api.slack.com/future/functions/custom
-const draft = createAnnouncement.addStep(CreateDraftFunction, {
-  created_by: createAnnouncement.inputs.created_by,
+const draft = CreateAnnouncement.addStep(CreateDraftFunction, {
+  created_by: CreateAnnouncement.inputs.created_by,
   message: form.outputs.fields.message,
   channels: form.outputs.fields.channels,
   channel: form.outputs.fields.channel,
@@ -89,7 +89,7 @@ const draft = createAnnouncement.addStep(CreateDraftFunction, {
 });
 
 // Step 3: Send announcement
-const send = createAnnouncement.addStep(SendAnnouncementFunction, {
+const send = CreateAnnouncement.addStep(SendAnnouncementFunction, {
   message: draft.outputs.message,
   channels: form.outputs.fields.channels,
   icon: form.outputs.fields.icon,
@@ -98,10 +98,10 @@ const send = createAnnouncement.addStep(SendAnnouncementFunction, {
 });
 
 // Step 4: Post summary of announcement
-createAnnouncement.addStep(PostSummaryFunction, {
+CreateAnnouncement.addStep(PostSummaryFunction, {
   announcements: send.outputs.announcements,
   channel: form.outputs.fields.channel,
   message_ts: draft.outputs.message_ts,
 });
 
-export default createAnnouncement;
+export default CreateAnnouncement;
