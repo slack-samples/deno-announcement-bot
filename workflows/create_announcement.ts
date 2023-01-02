@@ -11,7 +11,7 @@ import { SendAnnouncementFunction }  from '../functions/send_announcement/defini
  * This workflow uses interactivity. Learn more at:
  * https://api.slack.com/future/forms#add-interactivity
  */
-const CreateAnnouncement = DefineWorkflow({
+const CreateAnnouncementWorkflow = DefineWorkflow({
   callback_id: "create_announcement",
   title: "Create an announcement",
   description:
@@ -32,12 +32,12 @@ const CreateAnnouncement = DefineWorkflow({
 // Step 1: Open a form to create an announcement using built-in Function, OpenForm
 // For more on built-in functions
 // https://api.slack.com/future/functions#built-in-functions
-const form = CreateAnnouncement
+const formStep = CreateAnnouncementWorkflow
   .addStep(Schema.slack.functions.OpenForm, {
     title: "Create an announcement",
     description:
       "Create a draft announcement. You will have the opportunity to preview & edit it in channel before sending.\n\n_Want to create a richer announcement? Use <https://app.slack.com/block-kit-builder|Block Kit Builder> and paste the full payload into the message input below._",
-    interactivity: CreateAnnouncement.inputs.interactivity,
+    interactivity: CreateAnnouncementWorkflow.inputs.interactivity,
     submit_label: "Preview",
     fields: {
       elements: [{
@@ -79,29 +79,29 @@ const form = CreateAnnouncement
 // Step 2: Create a draft announcement
 // This step uses a custom function published by this app
 // https://api.slack.com/future/functions/custom
-const draft = CreateAnnouncement.addStep(CreateDraftFunction, {
-  created_by: CreateAnnouncement.inputs.created_by,
-  message: form.outputs.fields.message,
-  channels: form.outputs.fields.channels,
-  channel: form.outputs.fields.channel,
-  icon: form.outputs.fields.icon,
-  username: form.outputs.fields.username,
+const draftStep = CreateAnnouncementWorkflow.addStep(CreateDraftFunction, {
+  created_by: CreateAnnouncementWorkflow.inputs.created_by,
+  message: formStep.outputs.fields.message,
+  channels: formStep.outputs.fields.channels,
+  channel: formStep.outputs.fields.channel,
+  icon: formStep.outputs.fields.icon,
+  username: formStep.outputs.fields.username,
 });
 
 // Step 3: Send announcement
-const send = CreateAnnouncement.addStep(SendAnnouncementFunction, {
-  message: draft.outputs.message,
-  channels: form.outputs.fields.channels,
-  icon: form.outputs.fields.icon,
-  username: form.outputs.fields.username,
-  draft_id: draft.outputs.draft_id,
+const sendStep = CreateAnnouncementWorkflow.addStep(SendAnnouncementFunction, {
+  message: draftStep.outputs.message,
+  channels: formStep.outputs.fields.channels,
+  icon: formStep.outputs.fields.icon,
+  username: formStep.outputs.fields.username,
+  draft_id: draftStep.outputs.draft_id,
 });
 
 // Step 4: Post summary of announcement
-CreateAnnouncement.addStep(PostSummaryFunction, {
-  announcements: send.outputs.announcements,
-  channel: form.outputs.fields.channel,
-  message_ts: draft.outputs.message_ts,
+CreateAnnouncementWorkflow.addStep(PostSummaryFunction, {
+  announcements: sendStep.outputs.announcements,
+  channel: formStep.outputs.fields.channel,
+  message_ts: draftStep.outputs.message_ts,
 });
 
-export default CreateAnnouncement;
+export default CreateAnnouncementWorkflow;
