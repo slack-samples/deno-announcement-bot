@@ -1,8 +1,13 @@
 import { Trigger } from "deno-slack-api/types.ts";
-import createAnnouncement from "../workflows/create_announcement.ts";
+import CreateAnnouncementWorkflow from "../workflows/create_announcement.ts";
 
+/**
+ * This is a definition file for a shortcut link trigger
+ * For more on triggers and other trigger types:
+ * https://api.slack.com/future/triggers
+ */
 const trigger: Trigger<
-  typeof createAnnouncement.definition
+  typeof CreateAnnouncementWorkflow.definition
 > = {
   type: "shortcut",
   name: "Create an announcement",
