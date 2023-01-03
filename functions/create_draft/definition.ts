@@ -1,8 +1,10 @@
 import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
 
 /**
- * This is a custom function manifest definition that creates and sends an announcement draft
- * to a channel. More on custom function definition here:
+ * This is a custom function manifest definition which
+ * creates and sends an announcement draft to a channel.
+ *
+ * More on defining functions here:
  * https://api.slack.com/future/functions/custom
  */
 export const CreateDraftFunction = DefineFunction({

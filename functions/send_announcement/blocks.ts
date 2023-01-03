@@ -1,16 +1,16 @@
-import { Block } from "https://cdn.skypack.dev/@slack/types?dts";
+import { Block, KnownBlock } from "https://cdn.skypack.dev/@slack/types?dts";
 /**
  * These are helper utilities that assemble Block Kit block
  * payloads needed for this SendAnnouncement function
- * 
+ *
  * For more on Block Kit, see: https://api.slack.com/block-kit
- * 
+ *
  * Check out Block Kit Builder: https://app.slack.com/block-kit-builder
-*/
+ */
 
 export const buildAnnouncementBlocks = (
   message: string,
-) => {
+): KnownBlock[] => {
   let blocks = [];
 
   try {
@@ -34,10 +34,10 @@ export const buildSentBlocks = (
   created_by: string,
   message: string,
   channels: string[],
-) => {
+): (KnownBlock | Block)[] => {
   let sentBlocks = [];
 
-  const initial_blocks = [
+  const initialBlocks = [
     {
       "type": "section",
       "text": {
@@ -51,15 +51,16 @@ export const buildSentBlocks = (
     {
       "type": "divider",
     },
-  ] as Block[];
+  ];
 
   try {
-    // If this succeeds, input message is likely blocks
+    // If this succeeds, inputted message argument is likely Block Kit blocks
     const { blocks } = JSON.parse(message);
-    sentBlocks = initial_blocks.concat(blocks);
+
+    sentBlocks = initialBlocks.concat(blocks);
   } catch (_error) {
     // If there was a JSON parsing error, input message likely just plain text
-    sentBlocks = initial_blocks.concat([{
+    sentBlocks = initialBlocks.concat([{
       "type": "section",
       "text": {
         "type": "mrkdwn",

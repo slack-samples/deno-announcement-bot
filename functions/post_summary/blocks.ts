@@ -1,20 +1,19 @@
 import { AnnouncementType } from "./types.ts";
-import { SectionBlock } from "https://cdn.skypack.dev/@slack/types?dts";
+import { Block, KnownBlock } from "https://cdn.skypack.dev/@slack/types?dts";
 
 /**
  * These are helper utilities that assemble Block Kit block
  * payloads needed for this PostSummary function
- * 
+ *
  * For more on Block Kit, see: https://api.slack.com/block-kit
- * 
+ *
  * Check out Block Kit Builder: https://app.slack.com/block-kit-builder
-*/
+ */
 
 export const buildSummaryMessage = (
   summaries: AnnouncementType[],
-) => {
-
-  const blocks: SectionBlock = [
+): (KnownBlock | Block)[] => {
+  const blocks: KnownBlock[] = [
     {
       "type": "section",
       "text": {

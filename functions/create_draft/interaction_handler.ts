@@ -1,25 +1,37 @@
-import { buildEditModal, buildDraftBlocks, buildConfirmSendModal } from "./blocks.ts";
+import {
+  BlockActionHandler,
+  ViewSubmissionHandler,
+} from "deno-slack-sdk/functions/interactivity/types.ts";
 
+import { CreateDraftFunction } from "./definition.ts";
+import {
+  buildConfirmSendModal,
+  buildDraftBlocks,
+  buildEditModal,
+} from "./blocks.ts";
+
+import DraftDatastore from "../../datastores/drafts.ts";
 
 /**
- * These interaction handlers are registered on a Slack Function and 
+ * These interaction handlers are registered on a Slack Function and
  * are intended to handler user interaction with our announcement draft
  * edit and send buttons
- * 
+ *
  * More on handling Block Kit actions and views interactivity here:
- * https://api.slack.com/future/block-events  
+ * https://api.slack.com/future/block-events
  */
 
-export const OpenDraftEditView = async ({ body, action, client }) => {
+export const OpenDraftEditView: BlockActionHandler<
+  typeof CreateDraftFunction.definition
+> = async ({ body, action, client }) => {
   if (action.selected_option.value == "edit_message_overflow") {
-
     const id = action.block_id;
 
-    // Get the draft 
+    // Get the draft
     let editModalView;
     try {
       const { item } = await client.apps.datastore.get<
-        typeof drafts.definition
+        typeof DraftDatastore.definition
       >(
         {
           datastore: "drafts",
@@ -35,7 +47,8 @@ export const OpenDraftEditView = async ({ body, action, client }) => {
         body.user.team_id,
       );
     } catch (error) {
-      const draftGetErrorMsg = `Error getting draft with id ${id}. Error detail: ${error}`;
+      const draftGetErrorMsg =
+        `Error getting draft with id ${id}. Error detail: ${error}`;
       console.log(draftGetErrorMsg);
 
       await client.functions.completeError({
@@ -51,9 +64,10 @@ export const OpenDraftEditView = async ({ body, action, client }) => {
         view: editModalView,
       });
     } catch (error) {
-      const draftEditModalErrorMsg = `Error opening up the draft edit modal view. Error detail ${error}`;
+      const draftEditModalErrorMsg =
+        `Error opening up the draft edit modal view. Error detail ${error}`;
       console.log(draftEditModalErrorMsg);
-     
+
       await client.functions.completeError({
         function_execution_id: body.function_data.execution_id,
         error: draftEditModalErrorMsg,
@@ -62,8 +76,11 @@ export const OpenDraftEditView = async ({ body, action, client }) => {
   }
 };
 
-export const SaveDraftEditSubmission = async ({ inputs, view, client, body }) => {
-
+export const SaveDraftEditSubmission: ViewSubmissionHandler<
+  typeof CreateDraftFunction.definition
+> = async (
+  { inputs, view, client, body },
+) => {
   // Get the datastore draft ID from the modal's private metadata
   const { id, thread_ts } = JSON.parse(view.private_metadata || "");
 
@@ -79,7 +96,8 @@ export const SaveDraftEditSubmission = async ({ inputs, view, client, body }) =>
       },
     });
   } catch (error) {
-    const updateDraftMessageErrorMsg = `Error updating draft ${id} message. Error detail ${error}`;
+    const updateDraftMessageErrorMsg =
+      `Error updating draft ${id} message. Error detail ${error}`;
     console.log(updateDraftMessageErrorMsg);
 
     await client.functions.completeError({
@@ -102,8 +120,9 @@ export const SaveDraftEditSubmission = async ({ inputs, view, client, body }) =>
       blocks: blocks,
     });
   } catch (error) {
-    const updateDraftPreviewErrorMsg = `Error updating message: ${ts} in channel ${inputs.channel}. Error detail: ${error}`;
-    console.log(updateDraftPreviewErrorMsg)
+    const updateDraftPreviewErrorMsg =
+      `Error updating message: ${thread_ts} in channel ${inputs.channel}. Error detail: ${error}`;
+    console.log(updateDraftPreviewErrorMsg);
 
     await client.functions.completeError({
       function_execution_id: body.function_data.execution_id,
@@ -112,7 +131,11 @@ export const SaveDraftEditSubmission = async ({ inputs, view, client, body }) =>
   }
 };
 
-export const ConfirmAnnouncementForSend = async ({ inputs, body, action, client }) => {
+export const ConfirmAnnouncementForSend: BlockActionHandler<
+  typeof CreateDraftFunction.definition
+> = async (
+  { inputs, body, action, client },
+) => {
   const id = action.block_id;
 
   const view = buildConfirmSendModal(id, inputs.channels);
@@ -123,14 +146,16 @@ export const ConfirmAnnouncementForSend = async ({ inputs, body, action, client 
   });
 };
 
-export const SendAnnouncement =  async ({ body, view, client }) => {
+export const SendAnnouncement: ViewSubmissionHandler<
+  typeof CreateDraftFunction.definition
+> = async ({ body, view, client }) => {
   // Get the datastore draft ID from the modal's private metadata
   const { id } = JSON.parse(view.private_metadata || "");
 
   // Fetch latest version of the message from the datastore
   try {
     const { item } = await client.apps.datastore.get<
-      typeof drafts.definition
+      typeof DraftDatastore.definition
     >(
       {
         datastore: "drafts",
@@ -158,14 +183,14 @@ export const SendAnnouncement =  async ({ body, view, client }) => {
         error: "Error completing function",
       });
     }
-  
   } catch (error) {
-    const draftGetErrorMsg = `Failed to fetch draft announcement id: ${id} for send. Error detail ${error}`;
+    const draftGetErrorMsg =
+      `Failed to fetch draft announcement id: ${id} for send. Error detail ${error}`;
     console.log(draftGetErrorMsg);
 
     await client.functions.completeError({
       function_execution_id: body.function_data.execution_id,
-      error: draftGetErrorMsg
-    })
+      error: draftGetErrorMsg,
+    });
   }
 };

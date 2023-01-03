@@ -1,22 +1,23 @@
-
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
-import { SlackAPI } from "deno-slack-api/mod.ts";
+import { SlackAPIClient } from "deno-slack-api/types.ts";
 
 import { SendAnnouncementFunction } from "./definition.ts";
 import { buildAnnouncementBlocks, buildSentBlocks } from "./blocks.ts";
 import { AnnouncementType } from "../post_summary/types.ts";
 import { ChatPostMessageParams, DraftStatus } from "../create_draft/types.ts";
 
+import DraftDatastore from "../../datastores/drafts.ts";
+import AnnouncementsDatastore from "../../datastores/announcements.ts";
+
 /**
  * This is the handling code for SendAnnouncementFunction. It will:
  * 1. Send announcement to each channel supplied
- * 2. Updates the status of the announcement in the 
-*/
+ * 2. Updates the status of the announcement in the
+ */
 
 export default SlackFunction(
   SendAnnouncementFunction,
   async ({ inputs, client }) => {
-
     // Array to gather chat.postMessage responses
     // deno-lint-ignore no-explicit-any
     const chatPostMessagePromises: Promise<any>[] = [];
@@ -29,11 +30,11 @@ export default SlackFunction(
     const blocks = buildAnnouncementBlocks(inputs.message);
 
     for (const channel of inputs.channels) {
-      const params = {
+      const params: ChatPostMessageParams = {
         channel: channel,
         blocks: blocks,
         text: `An announcement was posted`,
-      } as ChatPostMessageParams;
+      };
 
       if (inputs.icon) {
         params.icon_emoji = inputs.icon;
@@ -43,8 +44,8 @@ export default SlackFunction(
         params.username = inputs.username;
       }
 
-      const announcement = await sendAndSaveAnnouncement(params, draft_id, client);
-      chatPostMessagePromises.push(announcement);
+      const announcementRes = sendAndSaveAnnouncement(params, draft_id, client);
+      chatPostMessagePromises.push(announcementRes);
     }
 
     const announcements = await Promise.all(chatPostMessagePromises);
@@ -52,7 +53,7 @@ export default SlackFunction(
     // Update draft if one was created
     if (inputs.draft_id) {
       const { item } = await client.apps.datastore.put<
-        typeof drafts.definition
+        typeof DraftDatastore.definition
       >({
         datastore: "drafts",
         //@ts-expect-error expecting fix
@@ -89,9 +90,8 @@ export default SlackFunction(
 async function sendAndSaveAnnouncement(
   params: ChatPostMessageParams,
   draft_id: string,
-  client: SlackAPI,
+  client: SlackAPIClient,
 ): Promise<AnnouncementType> {
-
   let announcement: AnnouncementType;
 
   // Send it
@@ -122,7 +122,7 @@ async function sendAndSaveAnnouncement(
   }
 
   // Save each announcement to DB even if there was an error posting
-  await client.apps.datastore.put<typeof announcements.definition>({
+  await client.apps.datastore.put<typeof AnnouncementsDatastore.definition>({
     datastore: "announcements",
     item: {
       id: crypto.randomUUID(),

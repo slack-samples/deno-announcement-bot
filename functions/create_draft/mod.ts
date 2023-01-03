@@ -2,25 +2,31 @@ import { SlackFunction } from "deno-slack-sdk/mod.ts";
 
 import { CreateDraftFunction } from "./definition.ts";
 import { buildDraftBlocks } from "./blocks.ts";
-import { OpenDraftEditView, SaveDraftEditSubmission, ConfirmAnnouncementForSend, SendAnnouncement } from "./interaction_handler.ts";
+import {
+  ConfirmAnnouncementForSend,
+  OpenDraftEditView,
+  SaveDraftEditSubmission,
+  SendAnnouncement,
+} from "./interaction_handler.ts";
 import { ChatPostMessageParams, DraftStatus } from "./types.ts";
 
+import DraftDatastore from "../../datastores/drafts.ts";
+
 /**
- * This is the handling code for CreateDraftFunction. It will:
+ * This is the handling code for the CreateDraftFunction. It will:
  * 1. Create a new datastore record with the draft
  * 2. Build a Block Kit message with the draft and send it to input channel
  * 3. Update the draft record with the successful sent drafts timestamp
  * 4. Pause function completion until user interaction
-*/
+ */
 export default SlackFunction(
   CreateDraftFunction,
   async ({ inputs, client }) => {
-
     const draftId = crypto.randomUUID();
 
     try {
       // 1. Create a new datastore record with the draft
-      await client.apps.datastore.put<typeof drafts.definition>({
+      await client.apps.datastore.put<typeof DraftDatastore.definition>({
         datastore: "drafts",
         //@ts-ignore expecting fix in future SDK release
         item: {
@@ -35,9 +41,10 @@ export default SlackFunction(
         },
       });
     } catch (error) {
-      const draftSaveErrorMsg = `Error saving draft announcement  Error detail: ${error}`;
+      const draftSaveErrorMsg =
+        `Error saving draft announcement  Error detail: ${error}`;
       console.log(draftSaveErrorMsg);
-      return { error: draftSaveErrorMsg};
+      return { error: draftSaveErrorMsg };
     }
 
     // 2. Build a Block Kit message with draft announcement and send it to input channel
@@ -66,15 +73,16 @@ export default SlackFunction(
     try {
       postDraft = await client.chat.postMessage(params);
     } catch (error) {
-      const draftPostErrorMsg = `Error posting draft announcement to ${params.channel} Error detail: ${error}`;
+      const draftPostErrorMsg =
+        `Error posting draft announcement to ${params.channel} Error detail: ${error}`;
       console.log(draftPostErrorMsg);
 
-      return { error: draftPostErrorMsg};
-    } 
+      return { error: draftPostErrorMsg };
+    }
 
     // 3. Update the draft record with the successful sent drafts timestamp
     try {
-      await client.apps.datastore.put<typeof drafts.definition>({
+      await client.apps.datastore.put<typeof DraftDatastore.definition>({
         datastore: "drafts",
         //@ts-expect-error expecting fix in future SDK release
         item: {
@@ -83,26 +91,27 @@ export default SlackFunction(
         },
       });
     } catch (error) {
-      const draftUpdateErrorMsg = `Error updating draft announcement timestamp for ${draftId} Error detail: ${error}`;
+      const draftUpdateErrorMsg =
+        `Error updating draft announcement timestamp for ${draftId} Error detail: ${error}`;
       console.log(draftUpdateErrorMsg);
     }
 
     // 4. Pause function completion until user interaction
-    // IMPORTANT! Set `completed` to false in order to pause function's complete state 
+    // IMPORTANT! Set `completed` to false in order to pause function's complete state
     // since we will wait for user interaction in the button handlers below.
-    // Steps after this step in the workflow will not execute until we 
-    // complete our function. 
+    // Steps after this step in the workflow will not execute until we
+    // complete our function.
     return { completed: false };
   },
 ).addBlockActionsHandler(
-  "preview_overflow",
-  OpenDraftEditView
+  "preview_overflow", // when user interacts with block with this id, use supplied handler
+  OpenDraftEditView,
 ).addViewSubmissionHandler(
   "edit_message_modal",
-  SaveDraftEditSubmission
+  SaveDraftEditSubmission,
 ).addBlockActionsHandler(
   "send_button",
-  ConfirmAnnouncementForSend
+  ConfirmAnnouncementForSend,
 ).addViewSubmissionHandler(
   "confirm_send_modal",
   SendAnnouncement,

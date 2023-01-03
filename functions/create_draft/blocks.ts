@@ -1,23 +1,27 @@
-import { Block } from "https://cdn.skypack.dev/@slack/types?dts";
+import {
+  Block,
+  KnownBlock,
+  ModalView,
+} from "https://cdn.skypack.dev/@slack/types?dts";
 
 /**
  * These are helper utilities that assemble Block Kit block
  * payloads needed for this CreateDraft function
- * 
+ *
  * For more on Block Kit, see: https://api.slack.com/block-kit
- * 
+ *
  * Check out Block Kit Builder: https://app.slack.com/block-kit-builder
-*/
+ */
 
 export const buildDraftBlocks = (
   draft_id: string,
   created_by: string,
   message: string,
   channels: string[],
-) => {
+): (KnownBlock | Block)[] => {
   let draftBlocks = [];
 
-  const initial_blocks = [
+  const initialBlocks = [
     {
       "type": "section",
       "text": {
@@ -69,15 +73,15 @@ export const buildDraftBlocks = (
         },
       ],
     },
-  ] as Block[];
+  ];
 
   try {
     // If this succeeds, input message is likely blocks
     const { blocks } = JSON.parse(message);
-    draftBlocks = initial_blocks.concat(blocks);
+    draftBlocks = initialBlocks.concat(blocks);
   } catch (_error) {
     // If there was a JSON parsing error, input message likely just plain text
-    draftBlocks = initial_blocks.concat([{
+    draftBlocks = initialBlocks.concat([{
       "type": "section",
       "text": {
         "type": "mrkdwn",
@@ -106,7 +110,7 @@ export const buildEditModal = (
   message: string,
   thread_ts: string,
   teamId: string,
-) => {
+): ModalView => {
   const blocks = [];
 
   try {
@@ -171,7 +175,7 @@ export const buildEditModal = (
     },
   });
 
-  const view = {
+  const view: ModalView = {
     "type": "modal",
     "callback_id": "edit_message_modal",
     "private_metadata": JSON.stringify({
@@ -199,8 +203,8 @@ export const buildEditModal = (
 export const buildConfirmSendModal = (
   id: string,
   channels: string[],
-) => {
-  const view = {
+): ModalView => {
+  const view: ModalView = {
     "type": "modal",
     "callback_id": "confirm_send_modal",
     "private_metadata": JSON.stringify({

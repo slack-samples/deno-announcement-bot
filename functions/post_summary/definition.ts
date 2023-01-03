@@ -1,11 +1,10 @@
-
 import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
 import { AnnouncementCustomType } from "./types.ts";
 
 /**
- * This is a custom function manifest definition that posts a summary of the 
+ * This is a custom function manifest definition that posts a summary of the
  * announcement send status to the supplied channel
- * 
+ *
  * More on custom function definition here:
  * https://api.slack.com/future/functions/custom
  */
