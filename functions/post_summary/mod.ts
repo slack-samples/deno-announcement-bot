@@ -1,6 +1,6 @@
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
 
-import { buildSummaryMessage } from "./blocks.ts";
+import { buildSummaryBlocks } from "./blocks.ts";
 import { PostSummaryFunction } from "./definition.ts";
 
 /**
@@ -12,7 +12,7 @@ import { PostSummaryFunction } from "./definition.ts";
 export default SlackFunction(
   PostSummaryFunction,
   async ({ inputs, client }) => {
-    const blocks = buildSummaryMessage(inputs.announcements);
+    const blocks = buildSummaryBlocks(inputs.announcements);
 
     // 1. Post a message in thread to the draft announcement message
     let postResp;

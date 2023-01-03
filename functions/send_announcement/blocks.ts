@@ -1,4 +1,9 @@
-import { Block, KnownBlock } from "https://cdn.skypack.dev/@slack/types?dts";
+import {
+  Block,
+  DividerBlock,
+  KnownBlock,
+  SectionBlock,
+} from "https://cdn.skypack.dev/@slack/types?dts";
 /**
  * These are helper utilities that assemble Block Kit block
  * payloads needed for this SendAnnouncement function
@@ -7,7 +12,6 @@ import { Block, KnownBlock } from "https://cdn.skypack.dev/@slack/types?dts";
  *
  * Check out Block Kit Builder: https://app.slack.com/block-kit-builder
  */
-
 export const buildAnnouncementBlocks = (
   message: string,
 ): KnownBlock[] => {
@@ -18,13 +22,7 @@ export const buildAnnouncementBlocks = (
     blocks = JSON.parse(message).blocks;
   } catch (_error) {
     // If there was a JSON parsing error, input message likely just plain text
-    blocks = [{
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": message,
-      },
-    }];
+    blocks = [mrkdwnSectionBlock(message)];
   }
 
   return blocks;
@@ -36,21 +34,13 @@ export const buildSentBlocks = (
   channels: string[],
 ): (KnownBlock | Block)[] => {
   let sentBlocks = [];
-
+  const initialText =
+    `:white_check_mark: *This announcement was sent*\n*Created by:* <@${created_by}>\n*Sent to:* <#${
+      channels.join(">, <#")
+    }>`;
   const initialBlocks = [
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text":
-          `:white_check_mark: *This announcement was sent*\n*Created by:* <@${created_by}>\n*Sent to:* <#${
-            channels.join(">, <#")
-          }>`,
-      },
-    },
-    {
-      "type": "divider",
-    },
+    mrkdwnSectionBlock(initialText),
+    dividerBlock(),
   ];
 
   try {
@@ -60,14 +50,25 @@ export const buildSentBlocks = (
     sentBlocks = initialBlocks.concat(blocks);
   } catch (_error) {
     // If there was a JSON parsing error, input message likely just plain text
-    sentBlocks = initialBlocks.concat([{
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": message,
-      },
-    }]);
+    sentBlocks = initialBlocks.concat([mrkdwnSectionBlock(message)]);
   }
 
   return sentBlocks;
 };
+
+// Helpers
+export function mrkdwnSectionBlock(message: string): SectionBlock {
+  return {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": message,
+    },
+  };
+}
+
+export function dividerBlock(): DividerBlock {
+  return {
+    "type": "divider",
+  };
+}

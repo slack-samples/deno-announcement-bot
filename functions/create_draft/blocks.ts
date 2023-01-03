@@ -4,6 +4,12 @@ import {
   ModalView,
 } from "https://cdn.skypack.dev/@slack/types?dts";
 
+import {
+  dividerBlock,
+  mrkdwnSectionBlock,
+} from "../send_announcement/blocks.ts";
+import { contextBlock, mrkdwnElement } from "../post_summary/blocks.ts";
+
 /**
  * These are helper utilities that assemble Block Kit block
  * payloads needed for this CreateDraft function
@@ -22,16 +28,11 @@ export const buildDraftBlocks = (
   let draftBlocks = [];
 
   const initialBlocks = [
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text":
-          `:pencil: *This announcement has NOT been sent*\n*Created by:* <@${created_by}>\n*Send to:* <#${
-            channels.join(">, <#")
-          }>`,
-      },
-    },
+    mrkdwnSectionBlock(
+      `:pencil: *This announcement has NOT been sent*\n*Created by:* <@${created_by}>\n*Send to:* <#${
+        channels.join(">, <#")
+      }>`,
+    ),
     {
       "type": "actions",
       "block_id": `${draft_id}`,
@@ -61,18 +62,8 @@ export const buildDraftBlocks = (
         },
       ],
     },
-    {
-      "type": "divider",
-    },
-    {
-      "type": "context",
-      "elements": [
-        {
-          "type": "mrkdwn",
-          "text": "`Begin draft`",
-        },
-      ],
-    },
+    dividerBlock(),
+    contextBlock(mrkdwnElement("`Begin draft`")),
   ];
 
   try {
@@ -81,25 +72,11 @@ export const buildDraftBlocks = (
     draftBlocks = initialBlocks.concat(blocks);
   } catch (_error) {
     // If there was a JSON parsing error, input message likely just plain text
-    draftBlocks = initialBlocks.concat([{
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": message,
-      },
-    }]);
+    draftBlocks = initialBlocks.concat([mrkdwnSectionBlock(message)]);
   }
 
   draftBlocks.push(
-    {
-      "type": "context",
-      "elements": [
-        {
-          "type": "mrkdwn",
-          "text": "`End draft`",
-        },
-      ],
-    },
+    contextBlock(mrkdwnElement("`End draft`")),
   );
 
   return draftBlocks;
@@ -118,45 +95,28 @@ export const buildEditModal = (
     // so we can add Block Kit Builder link to help edit the content
     const _message_blocks = JSON.parse(message);
     const encodedPayload = encodeURIComponent(message);
-    const builderLink =
-      `https://app.slack.com/block-kit-builder/${teamId}#${encodedPayload}`;
-    blocks.push({
-      "type": "context",
-      "elements": [
-        {
-          "type": "mrkdwn",
-          "text":
-            `Need help editing these blocks? Click <${builderLink}|here> to open the Block Kit Builder. When finished editing, click the *Copy Payload* button in the builder and replace the entire contents of the message below.`,
-        },
-      ],
-    });
+    const builderLink = getBuilderLink(teamId, encodedPayload);
+    const helpText =
+      `Need help editing these blocks? \n Click <${builderLink}|here> to view in the interactive Block Kit Builder. When finished editing, click the *Copy Payload* button in the builder and replace the entire contents of the message below.`;
+    blocks.push(
+      contextBlock(mrkdwnElement(helpText)),
+    );
   } catch (_error) {
+    // Otherwise treat input message as text string
     const messageAsSectionBlock = {
       "blocks": [
-        {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": message,
-          },
-        },
+        mrkdwnSectionBlock(message),
       ],
     };
     const encodedPayload = encodeURIComponent(
       JSON.stringify(messageAsSectionBlock),
     );
-    const builderLink =
-      `https://app.slack.com/block-kit-builder/${teamId}#${encodedPayload}`;
-    blocks.push({
-      "type": "context",
-      "elements": [
-        {
-          "type": "mrkdwn",
-          "text":
-            `Pro tip: You can copy and paste from <${builderLink}|Block Kit Builder> to create a super-formatted announcement. When finished editing, click the *Copy Payload* button in the builder and replace the entire contents of the message below.`,
-        },
-      ],
-    });
+    const builderLink = getBuilderLink(teamId, encodedPayload);
+    const helpText =
+      `Pro tip: You can copy and paste from <${builderLink}|Block Kit Builder> to create a super-formatted announcement. When finished editing, click the *Copy Payload* button in the builder and replace the entire contents of the message below.`;
+    blocks.push(
+      contextBlock(mrkdwnElement(helpText)),
+    );
   }
 
   blocks.push({
@@ -246,3 +206,8 @@ export const buildConfirmSendModal = (
 
   return view;
 };
+
+// Helpers
+export function getBuilderLink(teamId: string, payload: string) {
+  return `https://app.slack.com/block-kit-builder/${teamId}#${payload}`;
+}

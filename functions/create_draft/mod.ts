@@ -55,11 +55,11 @@ export default SlackFunction(
       inputs.channels,
     );
 
-    const params = {
+    const params: ChatPostMessageParams = {
       channel: inputs.channel,
       blocks: blocks,
       text: `An announcement draft was posted`,
-    } as ChatPostMessageParams;
+    };
 
     if (inputs.icon) {
       params.icon_emoji = inputs.icon;
@@ -104,7 +104,10 @@ export default SlackFunction(
     return { completed: false };
   },
 ).addBlockActionsHandler(
-  "preview_overflow", // when user interacts with block with this id, use supplied handler
+  // These are additional interactivity handlers for events triggered
+  // by a users interaction with Block Kit elements:
+  // Learn more at: https://api.slack.com/future/block-events#routes
+  "preview_overflow",
   OpenDraftEditView,
 ).addViewSubmissionHandler(
   "edit_message_modal",

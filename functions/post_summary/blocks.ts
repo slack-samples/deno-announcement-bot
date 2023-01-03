@@ -1,5 +1,15 @@
 import { AnnouncementType } from "./types.ts";
-import { Block, KnownBlock } from "https://cdn.skypack.dev/@slack/types?dts";
+import {
+  Block,
+  ContextBlock,
+  KnownBlock,
+  MrkdwnElement,
+} from "https://cdn.skypack.dev/@slack/types?dts";
+
+// There is a Slack API limit of 50 blocks in a single message payload
+export const MAX_BLOCKS_LENGTH = 50;
+export const SUCCESS_MATCHER = ":white_check_mark:";
+export const ERROR_MATCHER = ":no_entry:";
 
 /**
  * These are helper utilities that assemble Block Kit block
@@ -9,10 +19,10 @@ import { Block, KnownBlock } from "https://cdn.skypack.dev/@slack/types?dts";
  *
  * Check out Block Kit Builder: https://app.slack.com/block-kit-builder
  */
-
-export const buildSummaryMessage = (
-  summaries: AnnouncementType[],
+export const buildSummaryBlocks = (
+  announcementSummaries: AnnouncementType[],
 ): (KnownBlock | Block)[] => {
+  // add header summary block
   const blocks: KnownBlock[] = [
     {
       "type": "section",
@@ -23,52 +33,53 @@ export const buildSummaryMessage = (
     },
   ];
 
-  for (const announcement of summaries) {
-    // There is a limit of 50 blocks in a single message payload
-    // Stop adding new announcements if we approach this limit
-    // and tell users that some announcement links are being suppressed
-    if (blocks.length >= 48) {
+  // loop through summaries
+  for (const announcement of announcementSummaries) {
+    // If we have reached max blocks length (minus 1) add a final block
+    // telling users that some announcement links are being truncated
+    if (blocks.length == MAX_BLOCKS_LENGTH - 1) {
       blocks.push(
-        {
-          "type": "context",
-          "elements": [
-            {
-              "type": "mrkdwn",
-              "text": `.... and more`,
-            },
-          ],
-        },
+        truncationBlock(),
       );
       break;
     }
+
     if (announcement.success) {
+      const successMessage =
+        `${SUCCESS_MATCHER} <${announcement.permalink}| Announcement> sent to <#${announcement.channel_id}>`;
+
       blocks.push(
-        {
-          "type": "context",
-          "elements": [
-            {
-              "type": "mrkdwn",
-              "text":
-                `:white_check_mark: <${announcement.permalink}| Announcement> sent to <#${announcement.channel_id}>`,
-            },
-          ],
-        },
+        contextBlock(mrkdwnElement(successMessage)),
       );
     } else {
+      const errorMessage =
+        `${ERROR_MATCHER} \`${announcement.error}\` error sending to <#${announcement.channel_id}>`;
+
       blocks.push(
-        {
-          "type": "context",
-          "elements": [
-            {
-              "type": "mrkdwn",
-              "text":
-                `:no_entry: \`${announcement.error}\` error sending to <#${announcement.channel_id}>`,
-            },
-          ],
-        },
+        contextBlock(mrkdwnElement(errorMessage)),
       );
     }
   }
 
   return blocks;
 };
+
+// Helpers
+// deno-lint-ignore no-explicit-any
+export function contextBlock(...elements: any): ContextBlock {
+  return {
+    "type": "context",
+    "elements": elements,
+  };
+}
+
+export function mrkdwnElement(text: string): MrkdwnElement {
+  return {
+    "type": "mrkdwn",
+    "text": text,
+  };
+}
+
+export function truncationBlock(): KnownBlock {
+  return contextBlock(mrkdwnElement(".... and more"));
+}

@@ -1,6 +1,7 @@
 import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
 import { AnnouncementCustomType } from "./types.ts";
 
+export const POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID = "post_summary";
 /**
  * This is a custom function manifest definition that posts a summary of the
  * announcement send status to the supplied channel
@@ -9,7 +10,7 @@ import { AnnouncementCustomType } from "./types.ts";
  * https://api.slack.com/future/functions/custom
  */
 export const PostSummaryFunction = DefineFunction({
-  callback_id: "post_summary",
+  callback_id: POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,
   title: "Post announcement summary",
   description: "Post a summary of all sent announcements ",
   source_file: "functions/post_summary/mod.ts",

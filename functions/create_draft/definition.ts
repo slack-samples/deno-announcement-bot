@@ -1,5 +1,6 @@
 import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
 
+export const CREATE_DRAFT_FUNCTION_CALLBACK_ID = "create_draft";
 /**
  * This is a custom function manifest definition which
  * creates and sends an announcement draft to a channel.
@@ -8,7 +9,7 @@ import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
  * https://api.slack.com/future/functions/custom
  */
 export const CreateDraftFunction = DefineFunction({
-  callback_id: "create_draft",
+  callback_id: CREATE_DRAFT_FUNCTION_CALLBACK_ID,
   title: "Create a draft announcement",
   description:
     "Creates and sends an announcement draft to channel for review before sending",
