@@ -6,7 +6,7 @@ import {
 } from "https://cdn.skypack.dev/@slack/types?dts";
 /**
  * These are helper utilities that assemble Block Kit block
- * payloads needed for this SendAnnouncement function
+ * payloads needed for this prepareSendAnnouncement function
  *
  * For more on Block Kit, see: https://api.slack.com/block-kit
  *

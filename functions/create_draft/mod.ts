@@ -3,10 +3,10 @@ import { SlackFunction } from "deno-slack-sdk/mod.ts";
 import { CreateDraftFunction } from "./definition.ts";
 import { buildDraftBlocks } from "./blocks.ts";
 import {
-  ConfirmAnnouncementForSend,
-  OpenDraftEditView,
-  SaveDraftEditSubmission,
-  SendAnnouncement,
+  confirmAnnouncementForSend,
+  openDraftEditView,
+  prepareSendAnnouncement,
+  saveDraftEditSubmission,
 } from "./interaction_handler.ts";
 import { ChatPostMessageParams, DraftStatus } from "./types.ts";
 
@@ -108,14 +108,14 @@ export default SlackFunction(
   // by a users interaction with Block Kit elements:
   // Learn more at: https://api.slack.com/future/block-events#routes
   "preview_overflow",
-  OpenDraftEditView,
+  openDraftEditView,
 ).addViewSubmissionHandler(
   "edit_message_modal",
-  SaveDraftEditSubmission,
+  saveDraftEditSubmission,
 ).addBlockActionsHandler(
   "send_button",
-  ConfirmAnnouncementForSend,
+  confirmAnnouncementForSend,
 ).addViewSubmissionHandler(
   "confirm_send_modal",
-  SendAnnouncement,
+  prepareSendAnnouncement,
 );

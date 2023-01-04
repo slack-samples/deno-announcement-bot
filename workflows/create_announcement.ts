@@ -1,7 +1,7 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
 import { CreateDraftFunction } from "../functions/create_draft/definition.ts";
 import { PostSummaryFunction } from "../functions/post_summary/definition.ts";
-import { SendAnnouncementFunction } from "../functions/send_announcement/definition.ts";
+import { prepareSendAnnouncementFunction } from "../functions/send_announcement/definition.ts";
 
 /**
  * A Workflow is a set of steps that are executed in order
@@ -89,13 +89,16 @@ const draftStep = CreateAnnouncementWorkflow.addStep(CreateDraftFunction, {
 });
 
 // Step 3: Send announcement(s)
-const sendStep = CreateAnnouncementWorkflow.addStep(SendAnnouncementFunction, {
-  message: draftStep.outputs.message,
-  channels: formStep.outputs.fields.channels,
-  icon: formStep.outputs.fields.icon,
-  username: formStep.outputs.fields.username,
-  draft_id: draftStep.outputs.draft_id,
-});
+const sendStep = CreateAnnouncementWorkflow.addStep(
+  prepareSendAnnouncementFunction,
+  {
+    message: draftStep.outputs.message,
+    channels: formStep.outputs.fields.channels,
+    icon: formStep.outputs.fields.icon,
+    username: formStep.outputs.fields.username,
+    draft_id: draftStep.outputs.draft_id,
+  },
+);
 
 // Step 4: Post message summary of announcement
 CreateAnnouncementWorkflow.addStep(PostSummaryFunction, {

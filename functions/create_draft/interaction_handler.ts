@@ -21,7 +21,7 @@ import DraftDatastore from "../../datastores/drafts.ts";
  * https://api.slack.com/future/block-events
  */
 
-export const OpenDraftEditView: BlockActionHandler<
+export const openDraftEditView: BlockActionHandler<
   typeof CreateDraftFunction.definition
 > = async ({ body, action, client }) => {
   if (action.selected_option.value == "edit_message_overflow") {
@@ -76,7 +76,7 @@ export const OpenDraftEditView: BlockActionHandler<
   }
 };
 
-export const SaveDraftEditSubmission: ViewSubmissionHandler<
+export const saveDraftEditSubmission: ViewSubmissionHandler<
   typeof CreateDraftFunction.definition
 > = async (
   { inputs, view, client, body },
@@ -131,7 +131,7 @@ export const SaveDraftEditSubmission: ViewSubmissionHandler<
   }
 };
 
-export const ConfirmAnnouncementForSend: BlockActionHandler<
+export const confirmAnnouncementForSend: BlockActionHandler<
   typeof CreateDraftFunction.definition
 > = async (
   { inputs, body, action, client },
@@ -146,7 +146,7 @@ export const ConfirmAnnouncementForSend: BlockActionHandler<
   });
 };
 
-export const SendAnnouncement: ViewSubmissionHandler<
+export const prepareSendAnnouncement: ViewSubmissionHandler<
   typeof CreateDraftFunction.definition
 > = async ({ body, view, client }) => {
   // Get the datastore draft ID from the modal's private metadata
@@ -169,7 +169,8 @@ export const SendAnnouncement: ViewSubmissionHandler<
       draft_id: id,
     };
 
-    // Complete function so workflow can continue
+    // Complete function so workflow can continue to next step which
+    // sends the announcement
     const complete = await client.functions.completeSuccess({
       function_execution_id: body.function_data.execution_id,
       outputs,
