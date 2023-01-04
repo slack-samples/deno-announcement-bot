@@ -32,7 +32,7 @@ Deno.test("buildEditModal always outputs a context section with helper text", ()
     "",
   );
 
-  // first element shoud contain a context section
+  // first element should contain a context section
   assertEquals(editModal.blocks[0]?.type, "context");
 
   editModal = buildEditModal(
@@ -42,6 +42,6 @@ Deno.test("buildEditModal always outputs a context section with helper text", ()
     "",
   );
 
-  // first element shoud contain a context section
+  // first element should contain a context section
   assertEquals(editModal.blocks[0]?.type, "context");
 });
