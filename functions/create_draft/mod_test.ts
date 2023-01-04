@@ -60,7 +60,7 @@ Deno.test("returns an error if initial draft record in datastore fails (apps.dat
     return new Response(
       `{"ok": false}`,
       {
-        status: 418,
+        status: 200,
       },
     );
   });
@@ -74,7 +74,7 @@ Deno.test("returns an error if draft announcement fails to post (chat.postMessag
     return new Response(
       `{"ok": false}`,
       {
-        status: 418,
+        status: 200,
       },
     );
   });

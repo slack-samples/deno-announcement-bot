@@ -15,30 +15,28 @@ export default SlackFunction(
     const blocks = buildSummaryBlocks(inputs.announcements);
 
     // 1. Post a message in thread to the draft announcement message
-    let postResp;
-    try {
-      postResp = await client.chat.postMessage({
-        channel: inputs.channel,
-        thread_ts: inputs.message_ts || "",
-        blocks: blocks,
-        unfurl_links: false,
-      });
-
-      const outputs = {
-        channel: inputs.channel,
-        message_ts: postResp.ts,
-      };
-
-      // 2. Complete function with outputs
-      return { outputs: outputs };
-    } catch (error) {
+    const postResp = await client.chat.postMessage({
+      channel: inputs.channel,
+      thread_ts: inputs.message_ts || "",
+      blocks: blocks,
+      unfurl_links: false,
+    });
+    if (!postResp.ok) {
       const summaryTS = postResp ? postResp.ts : "n/a";
       const postSummaryErrorMsg =
-        `Error posting announcement send summary: ${summaryTS} to channel: ${inputs.channel}. Error details: ${error}`;
+        `Error posting announcement send summary: ${summaryTS} to channel: ${inputs.channel}. Contact the app maintainers with the following - (Error detail: ${postResp.error})`;
       console.log(postSummaryErrorMsg);
 
       // 2. Complete function with an error message
       return { error: postSummaryErrorMsg };
     }
+
+    const outputs = {
+      channel: inputs.channel,
+      message_ts: postResp.ts,
+    };
+
+    // 2. Complete function with outputs
+    return { outputs: outputs };
   },
 );

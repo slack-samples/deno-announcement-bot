@@ -28,27 +28,18 @@ export const openDraftEditView: BlockActionHandler<
     const id = action.block_id;
 
     // Get the draft
-    let editModalView;
-    try {
-      const { item } = await client.apps.datastore.get<
-        typeof DraftDatastore.definition
-      >(
-        {
-          datastore: "drafts",
-          id: id,
-        },
-      );
+    const putResp = await client.apps.datastore.get<
+      typeof DraftDatastore.definition
+    >(
+      {
+        datastore: "drafts",
+        id: id,
+      },
+    );
 
-      // Prepare the draft edit view
-      editModalView = buildEditModal(
-        id,
-        item.message,
-        body.message?.ts || "",
-        body.user.team_id,
-      );
-    } catch (error) {
+    if (!putResp.ok) {
       const draftGetErrorMsg =
-        `Error getting draft with id ${id}. Error detail: ${error}`;
+        `Error getting draft with id ${id}. Contact the app maintainers with the following - (Error detail: ${putResp.error})`;
       console.log(draftGetErrorMsg);
 
       await client.functions.completeError({
@@ -57,15 +48,23 @@ export const openDraftEditView: BlockActionHandler<
       });
     }
 
+    // Prepare the draft edit view
+    const editModalView = buildEditModal(
+      id,
+      putResp.item.message,
+      body.message?.ts || "",
+      body.user.team_id,
+    );
+
     // Open the draft edit modal view
-    try {
-      await client.views.open({
-        interactivity_pointer: body.interactivity.interactivity_pointer,
-        view: editModalView,
-      });
-    } catch (error) {
+    const viewsOpenResp = await client.views.open({
+      interactivity_pointer: body.interactivity.interactivity_pointer,
+      view: editModalView,
+    });
+
+    if (!viewsOpenResp.ok) {
       const draftEditModalErrorMsg =
-        `Error opening up the draft edit modal view. Error detail ${error}`;
+        `Error opening up the draft edit modal view. Contact the app maintainers with the following - (Error detail: ${viewsOpenResp.error}`;
       console.log(draftEditModalErrorMsg);
 
       await client.functions.completeError({
@@ -79,33 +78,30 @@ export const openDraftEditView: BlockActionHandler<
 export const saveDraftEditSubmission: ViewSubmissionHandler<
   typeof CreateDraftFunction.definition
 > = async (
-  { inputs, view, client, body },
+  { inputs, view, client },
 ) => {
   // Get the datastore draft ID from the modal's private metadata
   const { id, thread_ts } = JSON.parse(view.private_metadata || "");
 
   const message = view.state.values.message_block.message_input.value;
 
-  // Update the message with the updated message
-  try {
-    await client.apps.datastore.put({
-      datastore: "drafts",
-      item: {
-        id: id,
-        message: message,
-      },
-    });
-  } catch (error) {
-    const updateDraftMessageErrorMsg =
-      `Error updating draft ${id} message. Error detail ${error}`;
-    console.log(updateDraftMessageErrorMsg);
+  // Update the saved message
+  const putResp = await client.apps.datastore.put({
+    datastore: "drafts",
+    item: {
+      id: id,
+      message: message,
+    },
+  });
 
-    await client.functions.completeError({
-      function_execution_id: body.function_data.execution_id,
-      error: updateDraftMessageErrorMsg,
-    });
+  if (!putResp.ok) {
+    const updateDraftMessageErrorMsg =
+      `Error updating draft ${id} message. Contact the app maintainers with the following - (Error detail: ${putResp.error})`;
+    console.log(updateDraftMessageErrorMsg);
+    return;
   }
 
+  // build the updated message
   const blocks = buildDraftBlocks(
     id,
     inputs.created_by,
@@ -113,21 +109,17 @@ export const saveDraftEditSubmission: ViewSubmissionHandler<
     inputs.channels,
   );
 
-  try {
-    await client.chat.update({
-      channel: inputs.channel,
-      ts: thread_ts,
-      blocks: blocks,
-    });
-  } catch (error) {
-    const updateDraftPreviewErrorMsg =
-      `Error updating message: ${thread_ts} in channel ${inputs.channel}. Error detail: ${error}`;
-    console.log(updateDraftPreviewErrorMsg);
+  // update the edited draft message
+  const updateResp = await client.chat.update({
+    channel: inputs.channel,
+    ts: thread_ts,
+    blocks: blocks,
+  });
 
-    await client.functions.completeError({
-      function_execution_id: body.function_data.execution_id,
-      error: updateDraftPreviewErrorMsg,
-    });
+  if (!updateResp.ok) {
+    const updateDraftPreviewErrorMsg =
+      `Error updating message: ${thread_ts} in channel ${inputs.channel}. Contact the app maintainers with the following - (Error detail: ${updateResp.error})`;
+    console.log(updateDraftPreviewErrorMsg);
   }
 };
 
@@ -153,45 +145,44 @@ export const prepareSendAnnouncement: ViewSubmissionHandler<
   const { id } = JSON.parse(view.private_metadata || "");
 
   // Fetch latest version of the message from the datastore
-  try {
-    const { item } = await client.apps.datastore.get<
-      typeof DraftDatastore.definition
-    >(
-      {
-        datastore: "drafts",
-        id: id,
-      },
-    );
+  const getResp = await client.apps.datastore.get<
+    typeof DraftDatastore.definition
+  >(
+    {
+      datastore: "drafts",
+      id: id,
+    },
+  );
 
-    const outputs = {
-      message: item.message,
-      message_ts: item.message_ts,
-      draft_id: id,
-    };
-
-    // Complete function so workflow can continue to next step which
-    // sends the announcement
-    const complete = await client.functions.completeSuccess({
-      function_execution_id: body.function_data.execution_id,
-      outputs,
-    });
-
-    if (!complete.ok) {
-      console.error("Error completing function", complete);
-
-      await client.functions.completeError({
-        function_execution_id: body.function_data.execution_id,
-        error: "Error completing function",
-      });
-    }
-  } catch (error) {
+  if (!getResp.ok) {
     const draftGetErrorMsg =
-      `Failed to fetch draft announcement id: ${id} for send. Error detail ${error}`;
+      `Failed to fetch draft announcement id: ${id} for send. Contact the app maintainers with the following - (Error detail: ${getResp.error})`;
     console.log(draftGetErrorMsg);
+    return;
+  }
+
+  const { item } = getResp;
+
+  // Build function outputs
+  const outputs = {
+    message: item.message,
+    message_ts: item.message_ts,
+    draft_id: id,
+  };
+
+  // Complete function so workflow can continue to next step which
+  // sends the announcement
+  const complete = await client.functions.completeSuccess({
+    function_execution_id: body.function_data.execution_id,
+    outputs,
+  });
+
+  if (!complete.ok) {
+    console.error("Error completing function", complete);
 
     await client.functions.completeError({
       function_execution_id: body.function_data.execution_id,
-      error: draftGetErrorMsg,
+      error: "Error completing function",
     });
   }
 };

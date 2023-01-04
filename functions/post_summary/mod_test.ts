@@ -58,12 +58,12 @@ Deno.test("outputs error message when chat.postMessage !ok", async () => {
     return new Response(
       `{"ok": false, "error": "I am a teapot. I cannot chat.postMessage" }`,
       {
-        status: 418,
+        status: 200,
       },
     );
   });
 
   const { error } = await postSummary(createContext({ inputs }));
   assertExists(error);
-  assertStringIncludes(error, "Error details");
+  assertStringIncludes(error, "Error detail");
 });
