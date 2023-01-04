@@ -1,6 +1,12 @@
 import { DefineType, Schema } from "deno-slack-sdk/mod.ts";
 
-const Announcement = DefineType({
+/**
+ * This is a Slack Custom type for an Announcement
+ * For more on defining Custom types:
+ *
+ * https://api.slack.com/future/types/custom
+ */
+export const AnnouncementCustomType = DefineType({
   name: "Announcement",
   type: Schema.types.object,
   properties: {
@@ -20,4 +26,12 @@ const Announcement = DefineType({
   required: ["channel_id", "success"],
 });
 
-export default Announcement;
+/**
+ * Corresponding TS typing for use elsewhere
+ */
+export type AnnouncementType = {
+  channel_id: string;
+  success: boolean;
+  permalink?: string;
+  error?: string;
+};

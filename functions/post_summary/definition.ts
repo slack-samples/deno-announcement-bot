@@ -1,23 +1,25 @@
-import {
-  DefineFunction,
-  Schema,
-  SlackAPI,
-  SlackFunction,
-} from "deno-slack-sdk/mod.ts";
-import Announcement from "../types/announcement.ts";
-import { buildSummaryMessage } from "../views/summary_message.ts";
+import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
+import { AnnouncementCustomType } from "./types.ts";
 
-export const postSummary = DefineFunction({
-  callback_id: "post_summary",
+export const POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID = "post_summary";
+/**
+ * This is a custom function manifest definition that posts a summary of the
+ * announcement send status to the supplied channel
+ *
+ * More on custom function definition here:
+ * https://api.slack.com/future/functions/custom
+ */
+export const PostSummaryFunction = DefineFunction({
+  callback_id: POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,
   title: "Post announcement summary",
   description: "Post a summary of all sent announcements ",
-  source_file: "functions/post_summary.ts",
+  source_file: "functions/post_summary/mod.ts",
   input_parameters: {
     properties: {
       announcements: {
         type: Schema.types.array,
         items: {
-          type: Announcement,
+          type: AnnouncementCustomType,
         },
         description:
           "Array of objects that includes a channel ID and permalink for each announcement successfully sent",
@@ -49,25 +51,3 @@ export const postSummary = DefineFunction({
     required: ["channel", "message_ts"],
   },
 });
-
-export default SlackFunction(
-  postSummary,
-  async ({ inputs, token }) => {
-    const client = SlackAPI(token, {});
-
-    const blocks = buildSummaryMessage(inputs.announcements);
-
-    const summary = await client.chat.postMessage({
-      channel: inputs.channel,
-      thread_ts: inputs.message_ts || "",
-      blocks: blocks,
-      unfurl_links: false,
-    });
-    const outputs = {
-      channel: inputs.channel,
-      message_ts: summary.ts,
-    };
-
-    return { outputs: outputs };
-  },
-);

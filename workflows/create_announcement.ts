@@ -1,17 +1,17 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
-import { createDraft } from "../functions/create_draft.ts";
-import { postSummary } from "../functions/post_summary.ts";
-import { sendAnnouncement } from "../functions/send_announcement.ts";
+import { CreateDraftFunction } from "../functions/create_draft/definition.ts";
+import { PostSummaryFunction } from "../functions/post_summary/definition.ts";
+import { prepareSendAnnouncementFunction } from "../functions/send_announcement/definition.ts";
 
 /**
- * A Workflow is a set of steps that are executed in order.
+ * A Workflow is a set of steps that are executed in order
  * Each step in a Workflow is a function.
  * https://api.slack.com/future/workflows
  *
  * This workflow uses interactivity. Learn more at:
  * https://api.slack.com/future/forms#add-interactivity
  */
-const createAnnouncement = DefineWorkflow({
+const CreateAnnouncementWorkflow = DefineWorkflow({
   callback_id: "create_announcement",
   title: "Create an announcement",
   description:
@@ -32,12 +32,12 @@ const createAnnouncement = DefineWorkflow({
 // Step 1: Open a form to create an announcement using built-in Function, OpenForm
 // For more on built-in functions
 // https://api.slack.com/future/functions#built-in-functions
-const form = createAnnouncement
+const formStep = CreateAnnouncementWorkflow
   .addStep(Schema.slack.functions.OpenForm, {
     title: "Create an announcement",
     description:
       "Create a draft announcement. You will have the opportunity to preview & edit it in channel before sending.\n\n_Want to create a richer announcement? Use <https://app.slack.com/block-kit-builder|Block Kit Builder> and paste the full payload into the message input below._",
-    interactivity: createAnnouncement.inputs.interactivity,
+    interactivity: CreateAnnouncementWorkflow.inputs.interactivity,
     submit_label: "Preview",
     fields: {
       elements: [{
@@ -79,29 +79,32 @@ const form = createAnnouncement
 // Step 2: Create a draft announcement
 // This step uses a custom function published by this app
 // https://api.slack.com/future/functions/custom
-const draft = createAnnouncement.addStep(createDraft, {
-  created_by: createAnnouncement.inputs.created_by,
-  message: form.outputs.fields.message,
-  channels: form.outputs.fields.channels,
-  channel: form.outputs.fields.channel,
-  icon: form.outputs.fields.icon,
-  username: form.outputs.fields.username,
+const draftStep = CreateAnnouncementWorkflow.addStep(CreateDraftFunction, {
+  created_by: CreateAnnouncementWorkflow.inputs.created_by,
+  message: formStep.outputs.fields.message,
+  channels: formStep.outputs.fields.channels,
+  channel: formStep.outputs.fields.channel,
+  icon: formStep.outputs.fields.icon,
+  username: formStep.outputs.fields.username,
 });
 
-// Step 3: Send announcement
-const send = createAnnouncement.addStep(sendAnnouncement, {
-  message: draft.outputs.message,
-  channels: form.outputs.fields.channels,
-  icon: form.outputs.fields.icon,
-  username: form.outputs.fields.username,
-  draft_id: draft.outputs.draft_id,
+// Step 3: Send announcement(s)
+const sendStep = CreateAnnouncementWorkflow.addStep(
+  prepareSendAnnouncementFunction,
+  {
+    message: draftStep.outputs.message,
+    channels: formStep.outputs.fields.channels,
+    icon: formStep.outputs.fields.icon,
+    username: formStep.outputs.fields.username,
+    draft_id: draftStep.outputs.draft_id,
+  },
+);
+
+// Step 4: Post message summary of announcement
+CreateAnnouncementWorkflow.addStep(PostSummaryFunction, {
+  announcements: sendStep.outputs.announcements,
+  channel: formStep.outputs.fields.channel,
+  message_ts: draftStep.outputs.message_ts,
 });
 
-// Step 4: Post summary of announcement
-createAnnouncement.addStep(postSummary, {
-  announcements: send.outputs.announcements,
-  channel: form.outputs.fields.channel,
-  message_ts: draft.outputs.message_ts,
-});
-
-export default createAnnouncement;
+export default CreateAnnouncementWorkflow;
