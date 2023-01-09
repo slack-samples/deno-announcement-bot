@@ -1,7 +1,8 @@
 # 📯 Deno Announcement Bot
 
-A next-gen app helping users draft, edit and send announcements to one or more channels in
-their workspace. This app uses [datastores](https://api.slack.com/future/datastores).
+A next-gen app helping users draft, edit and send announcements to one or more
+channels in their workspace. This app uses
+[datastores](https://api.slack.com/future/datastores).
 
 **Guide Outline**:
 
@@ -22,7 +23,9 @@ their workspace. This app uses [datastores](https://api.slack.com/future/datasto
 ---
 
 ## Supported Workflows
-* **Create announcement**: Create an announcement draft and later edit or send it to selected channel(s).
+
+-* **Create announcement**: Create an announcement draft and later edit or send
+it to selected channel(s).
 
 ## Setup
 
@@ -52,8 +55,8 @@ $ cd deno-announcement-bot
 ## Create a Link Trigger
 
 [Triggers](https://api.slack.com/future/triggers) are what cause workflows to
-run. Triggers can be invoked by a user, or automatically as a response to
-an event within Slack.
+run. Triggers can be invoked by a user, or automatically as a response to an
+event within Slack.
 
 A [link trigger](https://api.slack.com/future/triggers/link) is a type of
 Trigger that generates a **Shortcut URL** which, when posted in a channel or
@@ -129,7 +132,8 @@ Here is the format of the blocks that the app expects:
 Submitting the form will post the message and other details to the draft channel
 you provided.
 
-:lightbulb: Please note that interactive elements (such as buttons, dropdowns) etc. are not supported. 
+:lightbulb: Please note that interactive elements (such as buttons, dropdowns)
+etc. are not supported.
 
 Use the overflow menu found in the draft message to edit the announcement text.
 Once ready, click the **Send Announcement** button to post the announcement in
@@ -202,7 +206,8 @@ Functions can be used independently or as steps in workflows.
 ### `/workflows`
 
 A [workflow](https://api.slack.com/future/workflows) is a set of steps that are
-executed in order. Each step in a workflow is a function, either a custom or built-in one.
+executed in order. Each step in a workflow is a function, either a custom or
+built-in one.
 
 Workflows can be configured to run without user input or they can collect input
 by beginning with a [form](https://api.slack.com/future/forms) before continuing
