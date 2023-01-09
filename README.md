@@ -52,7 +52,7 @@ $ slack create deno-announcement-bot -t slack-samples/deno-announcement-bot
 $ cd deno-announcement-bot
 ```
 
-## Create a Link Trigger
+## Create a link trigger
 
 [Triggers](https://api.slack.com/future/triggers) are what cause workflows to
 run. Triggers can be invoked by a user, or automatically as a response to an
@@ -171,8 +171,8 @@ app to Slack hosting using `slack deploy`:
 $ slack deploy
 ```
 
-After deploying, [create new Link Triggers](#create-a-link-trigger) for the
-production version of your app (not appended with `(dev)`). Once the Triggers
+After deploying, [create new link triggers](#create-a-link-trigger) for the
+production version of your app (not appended with `(dev)`). Once the triggers
 are invoked, the associated workflows should run just as they did when
 developing locally.
 
