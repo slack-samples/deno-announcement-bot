@@ -4,6 +4,8 @@ A next-gen app helping users draft, edit and send announcements to one or more
 channels in their workspace. This app uses
 [datastores](https://api.slack.com/future/datastores).
 
+https://user-images.githubusercontent.com/55667998/211395878-8b261c76-ba7d-4d3f-b7b5-07cbd44efffd.mp4
+
 **Guide Outline**:
 
 - [Supported Workflows](#supported-workflows)
