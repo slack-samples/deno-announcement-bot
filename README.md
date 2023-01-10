@@ -61,7 +61,7 @@ run. Triggers can be invoked by a user, or automatically as a response to an
 event within Slack.
 
 A [link trigger](https://api.slack.com/future/triggers/link) is a type of
-Trigger that generates a **Shortcut URL** which, when posted in a channel or
+trigger that generates a **Shortcut URL** which, when posted in a channel or
 added as a bookmark, becomes a link. When clicked, the link trigger will run the
 associated workflow.
 
