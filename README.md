@@ -26,8 +26,8 @@ https://user-images.githubusercontent.com/55667998/211395878-8b261c76-ba7d-4d3f-
 
 ## Supported Workflows
 
--* **Create announcement**: Create an announcement draft and later edit or send
-it to selected channel(s).
+- **Create announcement**: Create an announcement draft and later edit or send
+  it to selected channel(s).
 
 ## Setup
 
@@ -134,8 +134,8 @@ Here is the format of the blocks that the app expects:
 Submitting the form will post the message and other details to the draft channel
 you provided.
 
-:lightbulb: Please note that interactive elements (such as buttons, dropdowns)
-etc. are not supported.
+> :bulb: Please note that interactive elements (such as buttons, dropdowns) etc.
+> are not supported.
 
 Use the overflow menu found in the draft message to edit the announcement text.
 Once ready, click the **Send Announcement** button to post the announcement in

@@ -13,7 +13,7 @@ import {
 import DraftDatastore from "../../datastores/drafts.ts";
 
 /**
- * These interaction handlers are registered on a Slack Function and
+ * These interaction handlers are registered on a Slack function and
  * are intended to handler user interaction with our announcement draft
  * edit and send buttons
  *

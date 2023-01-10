@@ -29,7 +29,7 @@ export default SlackFunction(
       typeof DraftDatastore.definition
     >({
       datastore: "drafts",
-      //@ts-ignore expecting fix in future SDK release
+      // @ts-ignore expected fix in future release - otherwise missing non-required items throw type error
       item: {
         id: draftId,
         created_by: inputs.created_by,
@@ -86,7 +86,7 @@ export default SlackFunction(
       typeof DraftDatastore.definition
     >({
       datastore: "drafts",
-      //@ts-expect-error expecting fix in future SDK release
+      // @ts-expect-error expecting fix in future SDK release
       item: {
         id: draftId,
         message_ts: postDraftResp.ts,

@@ -56,7 +56,7 @@ export default SlackFunction(
         typeof DraftDatastore.definition
       >({
         datastore: "drafts",
-        //@ts-expect-error expecting fix
+        // @ts-ignore expected fix in future release - otherwise missing non-required items throw type error
         item: {
           id: inputs.draft_id,
           status: DraftStatus.Sent,

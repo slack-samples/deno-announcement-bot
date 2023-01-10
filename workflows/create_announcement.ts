@@ -4,7 +4,7 @@ import { PostSummaryFunction } from "../functions/post_summary/definition.ts";
 import { prepareSendAnnouncementFunction } from "../functions/send_announcement/definition.ts";
 
 /**
- * A Workflow is a set of steps that are executed in order
+ * A workflow is a set of steps that are executed in order
  * Each step in a Workflow is a function.
  * https://api.slack.com/future/workflows
  *
@@ -29,7 +29,7 @@ const CreateAnnouncementWorkflow = DefineWorkflow({
   },
 });
 
-// Step 1: Open a form to create an announcement using built-in Function, OpenForm
+// Step 1: Open a form to create an announcement using built-in function, OpenForm
 // For more on built-in functions
 // https://api.slack.com/future/functions#built-in-functions
 const formStep = CreateAnnouncementWorkflow
