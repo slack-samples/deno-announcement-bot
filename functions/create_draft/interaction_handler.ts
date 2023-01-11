@@ -32,7 +32,7 @@ export const openDraftEditView: BlockActionHandler<
       typeof DraftDatastore.definition
     >(
       {
-        datastore: "drafts",
+        datastore: DraftDatastore.name,
         id: id,
       },
     );
@@ -87,7 +87,7 @@ export const saveDraftEditSubmission: ViewSubmissionHandler<
 
   // Update the saved message
   const putResp = await client.apps.datastore.put({
-    datastore: "drafts",
+    datastore: DraftDatastore.name,
     item: {
       id: id,
       message: message,
@@ -149,7 +149,7 @@ export const prepareSendAnnouncement: ViewSubmissionHandler<
     typeof DraftDatastore.definition
   >(
     {
-      datastore: "drafts",
+      datastore: DraftDatastore.name,
       id: id,
     },
   );

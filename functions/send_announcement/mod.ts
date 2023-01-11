@@ -55,7 +55,7 @@ export default SlackFunction(
       const { item } = await client.apps.datastore.put<
         typeof DraftDatastore.definition
       >({
-        datastore: "drafts",
+        datastore: DraftDatastore.name,
         // @ts-ignore expected fix in future release - otherwise missing non-required items throw type error
         item: {
           id: inputs.draft_id,
@@ -123,7 +123,7 @@ async function sendAndSaveAnnouncement(
 
   // Save each announcement to DB even if there was an error posting
   await client.apps.datastore.put<typeof AnnouncementsDatastore.definition>({
-    datastore: "announcements",
+    datastore: AnnouncementsDatastore.name,
     item: {
       id: crypto.randomUUID(),
       draft_id: draft_id,

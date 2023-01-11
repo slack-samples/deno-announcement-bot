@@ -28,7 +28,7 @@ export default SlackFunction(
     const putResp = await client.apps.datastore.put<
       typeof DraftDatastore.definition
     >({
-      datastore: "drafts",
+      datastore: DraftDatastore.name,
       // @ts-ignore expected fix in future release - otherwise missing non-required items throw type error
       item: {
         id: draftId,
@@ -85,7 +85,7 @@ export default SlackFunction(
     const putResp2 = await client.apps.datastore.put<
       typeof DraftDatastore.definition
     >({
-      datastore: "drafts",
+      datastore: DraftDatastore.name,
       // @ts-expect-error expecting fix in future SDK release
       item: {
         id: draftId,
