@@ -9,7 +9,7 @@ export const POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID = "post_summary";
  * More on custom function definition here:
  * https://api.slack.com/future/functions/custom
  */
-export const PostSummaryFunction = DefineFunction({
+export const PostSummaryFunctionDefinition = DefineFunction({
   callback_id: POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,
   title: "Post announcement summary",
   description: "Post a summary of all sent announcements ",

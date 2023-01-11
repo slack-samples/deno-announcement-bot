@@ -8,7 +8,7 @@ export const CREATE_DRAFT_FUNCTION_CALLBACK_ID = "create_draft";
  * More on defining functions here:
  * https://api.slack.com/future/functions/custom
  */
-export const CreateDraftFunction = DefineFunction({
+export const CreateDraftFunctionDefinition = DefineFunction({
   callback_id: CREATE_DRAFT_FUNCTION_CALLBACK_ID,
   title: "Create a draft announcement",
   description:

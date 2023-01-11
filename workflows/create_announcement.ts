@@ -1,7 +1,7 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
-import { CreateDraftFunction } from "../functions/create_draft/definition.ts";
-import { PostSummaryFunction } from "../functions/post_summary/definition.ts";
-import { prepareSendAnnouncementFunction } from "../functions/send_announcement/definition.ts";
+import { CreateDraftFunctionDefinition } from "../functions/create_draft/definition.ts";
+import { PostSummaryFunctionDefinition } from "../functions/post_summary/definition.ts";
+import { PrepareSendAnnouncementFunctionDefinition } from "../functions/send_announcement/definition.ts";
 
 /**
  * A workflow is a set of steps that are executed in order
@@ -79,18 +79,21 @@ const formStep = CreateAnnouncementWorkflow
 // Step 2: Create a draft announcement
 // This step uses a custom function published by this app
 // https://api.slack.com/future/functions/custom
-const draftStep = CreateAnnouncementWorkflow.addStep(CreateDraftFunction, {
-  created_by: CreateAnnouncementWorkflow.inputs.created_by,
-  message: formStep.outputs.fields.message,
-  channels: formStep.outputs.fields.channels,
-  channel: formStep.outputs.fields.channel,
-  icon: formStep.outputs.fields.icon,
-  username: formStep.outputs.fields.username,
-});
+const draftStep = CreateAnnouncementWorkflow.addStep(
+  CreateDraftFunctionDefinition,
+  {
+    created_by: CreateAnnouncementWorkflow.inputs.created_by,
+    message: formStep.outputs.fields.message,
+    channels: formStep.outputs.fields.channels,
+    channel: formStep.outputs.fields.channel,
+    icon: formStep.outputs.fields.icon,
+    username: formStep.outputs.fields.username,
+  },
+);
 
 // Step 3: Send announcement(s)
 const sendStep = CreateAnnouncementWorkflow.addStep(
-  prepareSendAnnouncementFunction,
+  PrepareSendAnnouncementFunctionDefinition,
   {
     message: draftStep.outputs.message,
     channels: formStep.outputs.fields.channels,
@@ -101,7 +104,7 @@ const sendStep = CreateAnnouncementWorkflow.addStep(
 );
 
 // Step 4: Post message summary of announcement
-CreateAnnouncementWorkflow.addStep(PostSummaryFunction, {
+CreateAnnouncementWorkflow.addStep(PostSummaryFunctionDefinition, {
   announcements: sendStep.outputs.announcements,
   channel: formStep.outputs.fields.channel,
   message_ts: draftStep.outputs.message_ts,

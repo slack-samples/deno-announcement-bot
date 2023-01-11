@@ -1,16 +1,16 @@
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
 
 import { buildSummaryBlocks } from "./blocks.ts";
-import { PostSummaryFunction } from "./definition.ts";
+import { PostSummaryFunctionDefinition } from "./definition.ts";
 
 /**
- * This is the handling code for PostSummaryFunction. It will:
+ * This is the handling code for PostSummaryFunctionDefinition. It will:
  * 1. Post a message in thread to the draft announcement message
  * with a summary of announcement's sent
  * 2. Complete this function with either required outputs or an error
  */
 export default SlackFunction(
-  PostSummaryFunction,
+  PostSummaryFunctionDefinition,
   async ({ inputs, client }) => {
     const blocks = buildSummaryBlocks(inputs.announcements);
 
