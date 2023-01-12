@@ -16,6 +16,7 @@ https://user-images.githubusercontent.com/55667998/211395878-8b261c76-ba7d-4d3f-
 - [Running Your Project Locally](#running-your-project-locally)
 - [Usage](#usage)
   - [Notes](#notes)
+- [Datastores](#datastores)
 - [Testing](#testing)
 - [Deploying Your App](#deploying-your-app)
   - [Viewing Activity Logs](#viewing-activity-logs)
@@ -155,6 +156,14 @@ links) will be posted to the thread.
   [posting has been restricted](https://slack.com/help/articles/360004635551)
   (`restricted_action` error). Give your app explicit permission to post using
   the channel settings if necessary.
+
+### Datastores
+
+This app uses two datastores: for `announcements` and for `drafts`.
+
+Definition files for these can be found in `datastores/`. To use a datastore, an
+app needs to have `datastore:write`/`datastore:read` scopes, which are present
+in this app's `manifest.ts` file.
 
 ## Testing
 
