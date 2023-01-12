@@ -1,7 +1,7 @@
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
 import { SlackAPIClient } from "deno-slack-api/types.ts";
 
-import { prepareSendAnnouncementFunction } from "./definition.ts";
+import { PrepareSendAnnouncementFunctionDefinition } from "./definition.ts";
 import { buildAnnouncementBlocks, buildSentBlocks } from "./blocks.ts";
 import { AnnouncementType } from "../post_summary/types.ts";
 import { ChatPostMessageParams, DraftStatus } from "../create_draft/types.ts";
@@ -10,13 +10,13 @@ import DraftDatastore from "../../datastores/drafts.ts";
 import AnnouncementsDatastore from "../../datastores/announcements.ts";
 
 /**
- * This is the handling code for prepareSendAnnouncementFunction. It will:
+ * This is the handling code for PrepareSendAnnouncementFunctionDefinition. It will:
  * 1. Send announcement to each channel supplied
  * 2. Updates the status of the announcement in the
  */
 
 export default SlackFunction(
-  prepareSendAnnouncementFunction,
+  PrepareSendAnnouncementFunctionDefinition,
   async ({ inputs, client }) => {
     // Array to gather chat.postMessage responses
     // deno-lint-ignore no-explicit-any

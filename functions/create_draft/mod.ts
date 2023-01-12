@@ -1,6 +1,6 @@
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
 
-import { CreateDraftFunction } from "./definition.ts";
+import { CreateDraftFunctionDefinition } from "./definition.ts";
 import { buildDraftBlocks } from "./blocks.ts";
 import {
   confirmAnnouncementForSend,
@@ -13,14 +13,14 @@ import { ChatPostMessageParams, DraftStatus } from "./types.ts";
 import DraftDatastore from "../../datastores/drafts.ts";
 
 /**
- * This is the handling code for the CreateDraftFunction. It will:
+ * This is the handling code for the CreateDraftFunctionDefinition. It will:
  * 1. Create a new datastore record with the draft
  * 2. Build a Block Kit message with the draft and send it to input channel
  * 3. Update the draft record with the successful sent drafts timestamp
  * 4. Pause function completion until user interaction
  */
 export default SlackFunction(
-  CreateDraftFunction,
+  CreateDraftFunctionDefinition,
   async ({ inputs, client }) => {
     const draftId = crypto.randomUUID();
 
