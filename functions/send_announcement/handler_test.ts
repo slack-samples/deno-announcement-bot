@@ -2,8 +2,8 @@ import { SlackFunctionTester } from "deno-slack-sdk/mod.ts";
 import { assertEquals } from "https://deno.land/std@0.153.0/testing/asserts.ts";
 import * as mf from "https://deno.land/x/mock_fetch@0.3.0/mod.ts";
 
-import sendAnnouncement from "./mod.ts";
-import { SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID } from "./definition.ts";
+import sendAnnouncement from "./handler.ts";
+import { SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID } from "./mod.ts";
 
 const { createContext } = SlackFunctionTester(
   SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,
@@ -67,7 +67,7 @@ mf.mock("POST@/api/chat.update", () => {
 });
 
 Deno.test("run send announcement fn and return outputs", async () => {
-  // based on function inputs and outputs in "./definition.ts"
+  // based on function inputs and outputs in "./mod.ts"
   const inputs = {
     message: "_This_ is an *important* announcement!",
     channels: ["C12345678"],

@@ -1,129 +1,71 @@
-import { SlackFunction } from "deno-slack-sdk/mod.ts";
+import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
 
-import { CreateDraftFunctionDefinition } from "./definition.ts";
-import { buildDraftBlocks } from "./blocks.ts";
-import {
-  confirmAnnouncementForSend,
-  openDraftEditView,
-  prepareSendAnnouncement,
-  saveDraftEditSubmission,
-} from "./interaction_handler.ts";
-import { ChatPostMessageParams, DraftStatus } from "./types.ts";
-
-import DraftDatastore from "../../datastores/drafts.ts";
-
+export const CREATE_DRAFT_FUNCTION_CALLBACK_ID = "create_draft";
 /**
- * This is the handling code for the CreateDraftFunctionDefinition. It will:
- * 1. Create a new datastore record with the draft
- * 2. Build a Block Kit message with the draft and send it to input channel
- * 3. Update the draft record with the successful sent drafts timestamp
- * 4. Pause function completion until user interaction
+ * This is a custom function manifest definition which
+ * creates and sends an announcement draft to a channel.
+ *
+ * More on defining functions here:
+ * https://api.slack.com/future/functions/custom
  */
-export default SlackFunction(
-  CreateDraftFunctionDefinition,
-  async ({ inputs, client }) => {
-    const draftId = crypto.randomUUID();
-
-    // 1. Create a new datastore record with the draft
-    const putResp = await client.apps.datastore.put<
-      typeof DraftDatastore.definition
-    >({
-      datastore: DraftDatastore.name,
-      // @ts-ignore expected fix in future release - otherwise missing non-required items throw type error
-      item: {
-        id: draftId,
-        created_by: inputs.created_by,
-        message: inputs.message,
-        channels: inputs.channels,
-        channel: inputs.channel,
-        icon: inputs.icon,
-        username: inputs.username,
-        status: DraftStatus.Draft,
+export const CreateDraftFunctionDefinition = DefineFunction({
+  callback_id: CREATE_DRAFT_FUNCTION_CALLBACK_ID,
+  title: "Create a draft announcement",
+  description:
+    "Creates and sends an announcement draft to channel for review before sending",
+  source_file: "functions/create_draft/handler.ts",
+  input_parameters: {
+    properties: {
+      created_by: {
+        type: Schema.slack.types.user_id,
+        description: "The user that created the announcement draft",
       },
-    });
-
-    if (!putResp.ok) {
-      const draftSaveErrorMsg =
-        `Error saving draft announcement. Contact the app maintainers with the following information - (Error detail: ${putResp.error})`;
-      console.log(draftSaveErrorMsg);
-
-      return { error: draftSaveErrorMsg };
-    }
-
-    // 2. Build a Block Kit message with draft announcement and send it to input channel
-    const blocks = buildDraftBlocks(
-      draftId,
-      inputs.created_by,
-      inputs.message,
-      inputs.channels,
-    );
-
-    const params: ChatPostMessageParams = {
-      channel: inputs.channel,
-      blocks: blocks,
-      text: `An announcement draft was posted`,
-    };
-
-    if (inputs.icon) {
-      params.icon_emoji = inputs.icon;
-    }
-
-    if (inputs.username) {
-      params.username = inputs.username;
-    }
-
-    const postDraftResp = await client.chat.postMessage(params);
-    if (!postDraftResp.ok) {
-      const draftPostErrorMsg =
-        `Error posting draft announcement to ${params.channel}. Contact the app maintainers with the following information - (Error detail: ${postDraftResp.error})`;
-      console.log(draftPostErrorMsg);
-
-      return { error: draftPostErrorMsg };
-    }
-
-    // 3. Update the draft record with the successful sent drafts timestamp
-    const putResp2 = await client.apps.datastore.put<
-      typeof DraftDatastore.definition
-    >({
-      datastore: DraftDatastore.name,
-      // @ts-expect-error expecting fix in future SDK release
-      item: {
-        id: draftId,
-        message_ts: postDraftResp.ts,
+      message: {
+        type: Schema.types.string,
+        description: "The text content of the announcement",
       },
-    });
-
-    if (!putResp2.ok) {
-      const draftUpdateErrorMsg =
-        `Error updating draft announcement timestamp for ${draftId}. Contact the app maintainers with the following information - (Error detail: ${putResp2.error})`;
-      console.log(draftUpdateErrorMsg);
-
-      return { error: draftUpdateErrorMsg };
-    }
-
-    /**
-     * IMPORTANT! Set `completed` to false in order to pause function's complete state
-     * since we will wait for user interaction in the button handlers below.
-     * Steps after this step in the workflow will not execute until we
-     * complete our function.
-     */
-    return { completed: false };
+      channel: {
+        type: Schema.slack.types.channel_id,
+        description: "The channel where the announcement will be drafted",
+      },
+      channels: {
+        type: Schema.types.array,
+        items: {
+          type: Schema.slack.types.channel_id,
+        },
+        description: "The channels where the announcement will be posted",
+      },
+      icon: {
+        type: Schema.types.string,
+        description: "Optional custom bot icon to use display in announcements",
+      },
+      username: {
+        type: Schema.types.string,
+        description: "Optional custom bot emoji avatar to use in announcements",
+      },
+    },
+    required: [
+      "created_by",
+      "message",
+      "channel",
+      "channels",
+    ],
   },
-).addBlockActionsHandler(
-  /**
-   * These are additional interactivity handlers for events triggered
-   * by a users interaction with Block Kit elements:
-   * Learn more at: https://api.slack.com/future/block-events#routes
-   */
-  "preview_overflow",
-  openDraftEditView,
-).addViewSubmissionHandler(
-  "edit_message_modal",
-  saveDraftEditSubmission,
-).addBlockActionsHandler(
-  "send_button",
-  confirmAnnouncementForSend,
-).addViewSubmissionHandler(
-  "confirm_send_modal",
-  prepareSendAnnouncement,
-);
+  output_parameters: {
+    properties: {
+      draft_id: {
+        type: Schema.types.string,
+        description: "Datastore identifier for the draft",
+      },
+      message: {
+        type: Schema.types.string,
+        description: "The content of the announcement",
+      },
+      message_ts: {
+        type: Schema.types.string,
+        description: "The timestamp of the draft message in the Slack channel",
+      },
+    },
+    required: ["draft_id", "message", "message_ts"],
+  },
+});

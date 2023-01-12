@@ -6,8 +6,8 @@ import {
 } from "https://deno.land/std@0.153.0/testing/asserts.ts";
 import * as mf from "https://deno.land/x/mock_fetch@0.3.0/mod.ts";
 
-import postSummary from "./mod.ts";
-import { POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID } from "./definition.ts";
+import postSummary from "./handler.ts";
+import { POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID } from "./mod.ts";
 
 const { createContext } = SlackFunctionTester(
   POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,
@@ -18,7 +18,7 @@ mf.install();
 
 // Setup
 const mockSummaryChannelId = "C678910";
-// based on function inputs and outputs in "./definition.ts"
+// based on function inputs and outputs in "./mod.ts"
 const inputs = {
   announcements: [{
     channel_id: "C12345",

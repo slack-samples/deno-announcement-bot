@@ -3,7 +3,7 @@ import {
   ViewSubmissionHandler,
 } from "deno-slack-sdk/functions/interactivity/types.ts";
 
-import { CreateDraftFunctionDefinition as CreateDraftFunction } from "./definition.ts";
+import { CreateDraftFunctionDefinition as CreateDraftFunction } from "./mod.ts";
 import {
   buildConfirmSendModal,
   buildDraftBlocks,

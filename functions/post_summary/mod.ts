@@ -1,42 +1,53 @@
-import { SlackFunction } from "deno-slack-sdk/mod.ts";
+import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
+import { AnnouncementCustomType } from "./types.ts";
 
-import { buildSummaryBlocks } from "./blocks.ts";
-import { PostSummaryFunctionDefinition } from "./definition.ts";
-
+export const POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID = "post_summary";
 /**
- * This is the handling code for PostSummaryFunctionDefinition. It will:
- * 1. Post a message in thread to the draft announcement message
- * with a summary of announcement's sent
- * 2. Complete this function with either required outputs or an error
+ * This is a custom function manifest definition that posts a summary of the
+ * announcement send status to the supplied channel
+ *
+ * More on custom function definition here:
+ * https://api.slack.com/future/functions/custom
  */
-export default SlackFunction(
-  PostSummaryFunctionDefinition,
-  async ({ inputs, client }) => {
-    const blocks = buildSummaryBlocks(inputs.announcements);
-
-    // 1. Post a message in thread to the draft announcement message
-    const postResp = await client.chat.postMessage({
-      channel: inputs.channel,
-      thread_ts: inputs.message_ts || "",
-      blocks: blocks,
-      unfurl_links: false,
-    });
-    if (!postResp.ok) {
-      const summaryTS = postResp ? postResp.ts : "n/a";
-      const postSummaryErrorMsg =
-        `Error posting announcement send summary: ${summaryTS} to channel: ${inputs.channel}. Contact the app maintainers with the following - (Error detail: ${postResp.error})`;
-      console.log(postSummaryErrorMsg);
-
-      // 2. Complete function with an error message
-      return { error: postSummaryErrorMsg };
-    }
-
-    const outputs = {
-      channel: inputs.channel,
-      message_ts: postResp.ts,
-    };
-
-    // 2. Complete function with outputs
-    return { outputs: outputs };
+export const PostSummaryFunctionDefinition = DefineFunction({
+  callback_id: POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,
+  title: "Post announcement summary",
+  description: "Post a summary of all sent announcements ",
+  source_file: "functions/post_summary/handler.ts",
+  input_parameters: {
+    properties: {
+      announcements: {
+        type: Schema.types.array,
+        items: {
+          type: AnnouncementCustomType,
+        },
+        description:
+          "Array of objects that includes a channel ID and permalink for each announcement successfully sent",
+      },
+      channel: {
+        type: Schema.slack.types.channel_id,
+        description: "The channel where the summary should be posted",
+      },
+      message_ts: {
+        type: Schema.types.string,
+        description:
+          "Options message timestamp where the summary should be threaded",
+      },
+    },
+    required: [
+      "announcements",
+      "channel",
+    ],
   },
-);
+  output_parameters: {
+    properties: {
+      channel: {
+        type: Schema.slack.types.channel_id,
+      },
+      message_ts: {
+        type: Schema.types.string,
+      },
+    },
+    required: ["channel", "message_ts"],
+  },
+});
