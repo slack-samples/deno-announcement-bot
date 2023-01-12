@@ -3,7 +3,7 @@ import {
   ViewSubmissionHandler,
 } from "deno-slack-sdk/functions/interactivity/types.ts";
 
-import { CreateDraftFunctionDefinition } from "./definition.ts";
+import { CreateDraftFunctionDefinition as CreateDraftFunction } from "./definition.ts";
 import {
   buildConfirmSendModal,
   buildDraftBlocks,
@@ -22,7 +22,7 @@ import DraftDatastore from "../../datastores/drafts.ts";
  */
 
 export const openDraftEditView: BlockActionHandler<
-  typeof CreateDraftFunctionDefinition.definition
+  typeof CreateDraftFunction.definition
 > = async ({ body, action, client }) => {
   if (action.selected_option.value == "edit_message_overflow") {
     const id = action.block_id;
@@ -76,7 +76,7 @@ export const openDraftEditView: BlockActionHandler<
 };
 
 export const saveDraftEditSubmission: ViewSubmissionHandler<
-  typeof CreateDraftFunctionDefinition.definition
+  typeof CreateDraftFunction.definition
 > = async (
   { inputs, view, client },
 ) => {
@@ -124,7 +124,7 @@ export const saveDraftEditSubmission: ViewSubmissionHandler<
 };
 
 export const confirmAnnouncementForSend: BlockActionHandler<
-  typeof CreateDraftFunctionDefinition.definition
+  typeof CreateDraftFunction.definition
 > = async (
   { inputs, body, action, client },
 ) => {
@@ -139,7 +139,7 @@ export const confirmAnnouncementForSend: BlockActionHandler<
 };
 
 export const prepareSendAnnouncement: ViewSubmissionHandler<
-  typeof CreateDraftFunctionDefinition.definition
+  typeof CreateDraftFunction.definition
 > = async ({ body, view, client }) => {
   // Get the datastore draft ID from the modal's private metadata
   const { id } = JSON.parse(view.private_metadata || "");
