@@ -158,11 +158,12 @@ links) will be posted to the thread.
   the channel settings if necessary.
 
 ### Datastores
+
 This app uses two datastores: for `announcements` and for `drafts`.
 
-Definition files for these can be found in `datastores/`.
-To use a datastore, an app needs to have `datastore:write`/`datastore:read` scopes,
-which you can see are present in this app's `manifest.ts` file. 
+Definition files for these can be found in `datastores/`. To use a datastore, an
+app needs to have `datastore:write`/`datastore:read` scopes, which are present
+in this app's `manifest.ts` file.
 
 ## Testing
 
