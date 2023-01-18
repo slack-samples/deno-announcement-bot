@@ -5,7 +5,7 @@ import { PrepareSendAnnouncementFunctionDefinition } from "../functions/send_ann
 
 /**
  * A workflow is a set of steps that are executed in order
- * Each step in a Workflow is a function.
+ * Each step in a workflow is a function.
  * https://api.slack.com/future/workflows
  *
  * This workflow uses interactivity. Learn more at:
