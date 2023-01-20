@@ -1,7 +1,7 @@
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
 
 import { buildSummaryBlocks } from "./blocks.ts";
-import { PostSummaryFunctionDefinition } from "./mod.ts";
+import { PostSummaryFunctionDefinition } from "./definition.ts";
 
 /**
  * This is the handling code for PostSummaryFunction. It will:

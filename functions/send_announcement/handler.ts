@@ -1,7 +1,7 @@
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
 import { SlackAPIClient } from "deno-slack-api/types.ts";
 
-import { PrepareSendAnnouncementFunctionDefinition } from "./mod.ts";
+import { PrepareSendAnnouncementFunctionDefinition } from "./definition.ts";
 import { buildAnnouncementBlocks, buildSentBlocks } from "./blocks.ts";
 
 import { AnnouncementType } from "../post_summary/types.ts";

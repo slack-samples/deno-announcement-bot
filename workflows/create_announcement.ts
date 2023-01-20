@@ -1,7 +1,7 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
-import { CreateDraftFunctionDefinition } from "../functions/create_draft/mod.ts";
-import { PostSummaryFunctionDefinition } from "../functions/post_summary/mod.ts";
-import { PrepareSendAnnouncementFunctionDefinition } from "../functions/send_announcement/mod.ts";
+import { CreateDraftFunctionDefinition } from "../functions/create_draft/definition.ts";
+import { PostSummaryFunctionDefinition } from "../functions/post_summary/definition.ts";
+import { PrepareSendAnnouncementFunctionDefinition } from "../functions/send_announcement/definition.ts";
 
 /**
  * A workflow is a set of steps that are executed in order

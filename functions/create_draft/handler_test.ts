@@ -6,7 +6,7 @@ import {
 } from "https://deno.land/std@0.153.0/testing/asserts.ts";
 
 import createDraft from "./handler.ts";
-import { CREATE_DRAFT_FUNCTION_CALLBACK_ID } from "./mod.ts";
+import { CREATE_DRAFT_FUNCTION_CALLBACK_ID } from "./definition.ts";
 
 const { createContext } = SlackFunctionTester(
   CREATE_DRAFT_FUNCTION_CALLBACK_ID,
@@ -15,7 +15,7 @@ const { createContext } = SlackFunctionTester(
 // Replace global this.fetch with mocked copy
 mf.install();
 
-// Setup inputs based on function inputs and outputs in "./mod.ts"
+// Setup inputs based on function inputs and outputs in "./definition.ts"
 const inputs = {
   created_by: "dummyUserId",
   message: "The content of the announcement",

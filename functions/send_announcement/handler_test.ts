@@ -3,7 +3,7 @@ import { assertEquals } from "https://deno.land/std@0.153.0/testing/asserts.ts";
 import * as mf from "https://deno.land/x/mock_fetch@0.3.0/mod.ts";
 
 import sendAnnouncement from "./handler.ts";
-import { SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID } from "./mod.ts";
+import { SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID } from "./definition.ts";
 
 const { createContext } = SlackFunctionTester(
   SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,

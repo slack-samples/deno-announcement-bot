@@ -1,13 +1,13 @@
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
 
-import { CreateDraftFunctionDefinition } from "./mod.ts";
+import { CreateDraftFunctionDefinition } from "./definition.ts";
 import { buildDraftBlocks } from "./blocks.ts";
 import {
   confirmAnnouncementForSend,
   openDraftEditView,
   prepareSendAnnouncement,
   saveDraftEditSubmission,
-} from "./interaction_handler.ts";
+} from "./interactivity_handler.ts";
 import { ChatPostMessageParams, DraftStatus } from "./types.ts";
 
 import DraftDatastore from "../../datastores/drafts.ts";
