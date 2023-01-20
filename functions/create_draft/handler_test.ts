@@ -5,7 +5,7 @@ import {
   assertFalse,
 } from "https://deno.land/std@0.153.0/testing/asserts.ts";
 
-import createDraft from "./mod.ts";
+import createDraft from "./handler.ts";
 import { CREATE_DRAFT_FUNCTION_CALLBACK_ID } from "./definition.ts";
 
 const { createContext } = SlackFunctionTester(

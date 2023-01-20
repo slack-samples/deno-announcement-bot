@@ -7,13 +7,13 @@ import {
   openDraftEditView,
   prepareSendAnnouncement,
   saveDraftEditSubmission,
-} from "./interaction_handler.ts";
+} from "./interactivity_handler.ts";
 import { ChatPostMessageParams, DraftStatus } from "./types.ts";
 
 import DraftDatastore from "../../datastores/drafts.ts";
 
 /**
- * This is the handling code for the CreateDraftFunctionDefinition. It will:
+ * This is the handling code for the CreateDraftFunction. It will:
  * 1. Create a new datastore record with the draft
  * 2. Build a Block Kit message with the draft and send it to input channel
  * 3. Update the draft record with the successful sent drafts timestamp

@@ -3,6 +3,7 @@ import { SlackAPIClient } from "deno-slack-api/types.ts";
 
 import { PrepareSendAnnouncementFunctionDefinition } from "./definition.ts";
 import { buildAnnouncementBlocks, buildSentBlocks } from "./blocks.ts";
+
 import { AnnouncementType } from "../post_summary/types.ts";
 import { ChatPostMessageParams, DraftStatus } from "../create_draft/types.ts";
 
@@ -10,7 +11,7 @@ import DraftDatastore from "../../datastores/drafts.ts";
 import AnnouncementsDatastore from "../../datastores/announcements.ts";
 
 /**
- * This is the handling code for PrepareSendAnnouncementFunctionDefinition. It will:
+ * This is the handling code for PrepareSendAnnouncementFunction. It will:
  * 1. Send announcement to each channel supplied
  * 2. Updates the status of the announcement in the
  */

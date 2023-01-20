@@ -3,7 +3,7 @@ import { AnnouncementCustomType } from "../post_summary/types.ts";
 
 export const SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID = "send_announcement";
 /**
- * This is a custom function manifest definition that sends an
+ * This is a custom function definition that sends an
  * announcement to the supplied channel
  *
  * More on custom function definition here:
@@ -13,7 +13,7 @@ export const PrepareSendAnnouncementFunctionDefinition = DefineFunction({
   callback_id: SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,
   title: "Send an announcement",
   description: "Sends a message to one or more channels",
-  source_file: "functions/send_announcement/mod.ts",
+  source_file: "functions/send_announcement/handler.ts",
   input_parameters: {
     properties: {
       message: {

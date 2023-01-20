@@ -13,7 +13,7 @@ export const CreateDraftFunctionDefinition = DefineFunction({
   title: "Create a draft announcement",
   description:
     "Creates and sends an announcement draft to channel for review before sending",
-  source_file: "functions/create_draft/mod.ts",
+  source_file: "functions/create_draft/handler.ts",
   input_parameters: {
     properties: {
       created_by: {
