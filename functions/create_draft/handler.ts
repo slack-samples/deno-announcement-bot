@@ -86,7 +86,6 @@ export default SlackFunction(
       typeof DraftDatastore.definition
     >({
       datastore: DraftDatastore.name,
-      // @ts-expect-error expecting fix in future SDK release
       item: {
         id: draftId,
         message_ts: postDraftResp.ts,

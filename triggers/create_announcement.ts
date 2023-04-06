@@ -1,4 +1,4 @@
-import { Trigger } from "deno-slack-api/types.ts";
+import { Trigger } from "deno-slack-sdk/types.ts";
 import CreateAnnouncementWorkflow from "../workflows/create_announcement.ts";
 
 /**
