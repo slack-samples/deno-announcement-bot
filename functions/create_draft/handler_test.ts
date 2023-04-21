@@ -37,6 +37,15 @@ Deno.test("successfully posts an announcement draft and returns completed:false"
     );
   });
 
+  mf.mock("POST@/api/apps.datastore.update", () => {
+    return new Response(
+      `{"ok": true}`,
+      {
+        status: 200,
+      },
+    );
+  });
+
   // successful chat.postMessage
   mf.mock("POST@/api/chat.postMessage", () => {
     return new Response(

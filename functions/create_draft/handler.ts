@@ -82,7 +82,7 @@ export default SlackFunction(
     }
 
     // 3. Update the draft record with the successful sent drafts timestamp
-    const putResp2 = await client.apps.datastore.put<
+    const putResp2 = await client.apps.datastore.update<
       typeof DraftDatastore.definition
     >({
       datastore: DraftDatastore.name,
