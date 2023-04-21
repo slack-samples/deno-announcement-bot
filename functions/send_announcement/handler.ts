@@ -53,7 +53,7 @@ export default SlackFunction(
 
     // Update draft if one was created
     if (inputs.draft_id) {
-      const { item } = await client.apps.datastore.put<
+      const { item } = await client.apps.datastore.update<
         typeof DraftDatastore.definition
       >({
         datastore: DraftDatastore.name,

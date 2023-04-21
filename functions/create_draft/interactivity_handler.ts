@@ -86,7 +86,7 @@ export const saveDraftEditSubmission: ViewSubmissionHandler<
   const message = view.state.values.message_block.message_input.value;
 
   // Update the saved message
-  const putResp = await client.apps.datastore.put({
+  const putResp = await client.apps.datastore.update({
     datastore: DraftDatastore.name,
     item: {
       id: id,
