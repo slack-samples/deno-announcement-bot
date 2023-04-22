@@ -7,7 +7,7 @@ export const SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID = "send_announcement";
  * announcement to the supplied channel
  *
  * More on custom function definition here:
- * https://api.slack.com/future/functions/custom
+ * https://api.slack.com/automation/functions/custom
  */
 export const PrepareSendAnnouncementFunctionDefinition = DefineFunction({
   callback_id: SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,

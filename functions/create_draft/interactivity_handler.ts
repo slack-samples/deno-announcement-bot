@@ -18,7 +18,7 @@ import DraftDatastore from "../../datastores/drafts.ts";
  * edit and send buttons
  *
  * More on handling Block Kit actions and views interactivity here:
- * https://api.slack.com/future/block-events
+ * https://api.slack.com/automation/block-events
  */
 
 export const openDraftEditView: BlockActionHandler<

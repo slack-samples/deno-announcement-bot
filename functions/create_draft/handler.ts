@@ -112,7 +112,7 @@ export default SlackFunction(
   /**
    * These are additional interactivity handlers for events triggered
    * by a users interaction with Block Kit elements:
-   * Learn more at: https://api.slack.com/future/block-events#routes
+   * Learn more at: https://api.slack.com/automation/block-events#routes
    */
   "preview_overflow",
   openDraftEditView,
