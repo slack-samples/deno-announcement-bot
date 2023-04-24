@@ -6,7 +6,7 @@ export const CREATE_DRAFT_FUNCTION_CALLBACK_ID = "create_draft";
  * creates and sends an announcement draft to a channel.
  *
  * More on defining functions here:
- * https://api.slack.com/future/functions/custom
+ * https://api.slack.com/automation/functions/custom
  */
 export const CreateDraftFunctionDefinition = DefineFunction({
   callback_id: CREATE_DRAFT_FUNCTION_CALLBACK_ID,

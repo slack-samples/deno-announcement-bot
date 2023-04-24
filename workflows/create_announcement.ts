@@ -6,10 +6,10 @@ import { PrepareSendAnnouncementFunctionDefinition } from "../functions/send_ann
 /**
  * A workflow is a set of steps that are executed in order
  * Each step in a workflow is a function.
- * https://api.slack.com/future/workflows
+ * https://api.slack.com/automation/workflows
  *
  * This workflow uses interactivity. Learn more at:
- * https://api.slack.com/future/forms#add-interactivity
+ * https://api.slack.com/automation/forms#add-interactivity
  */
 const CreateAnnouncementWorkflow = DefineWorkflow({
   callback_id: "create_announcement",
@@ -31,7 +31,7 @@ const CreateAnnouncementWorkflow = DefineWorkflow({
 
 // Step 1: Open a form to create an announcement using built-in function, OpenForm
 // For more on built-in functions
-// https://api.slack.com/future/functions#built-in-functions
+// https://api.slack.com/automation/functions#built-in-functions
 const formStep = CreateAnnouncementWorkflow
   .addStep(Schema.slack.functions.OpenForm, {
     title: "Create an announcement",
@@ -78,7 +78,7 @@ const formStep = CreateAnnouncementWorkflow
 
 // Step 2: Create a draft announcement
 // This step uses a custom function published by this app
-// https://api.slack.com/future/functions/custom
+// https://api.slack.com/automation/functions/custom
 const draftStep = CreateAnnouncementWorkflow.addStep(
   CreateDraftFunctionDefinition,
   {

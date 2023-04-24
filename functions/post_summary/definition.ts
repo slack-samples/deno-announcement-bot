@@ -7,7 +7,7 @@ export const POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID = "post_summary";
  * announcement send status to the supplied channel
  *
  * More on custom function definition here:
- * https://api.slack.com/future/functions/custom
+ * https://api.slack.com/automation/functions/custom
  */
 export const PostSummaryFunctionDefinition = DefineFunction({
   callback_id: POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID,
