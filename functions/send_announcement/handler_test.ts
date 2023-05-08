@@ -85,7 +85,6 @@ Deno.test("run send announcement fn and return outputs", async () => {
   const { outputs } = await sendAnnouncement(createContext({ inputs }));
   await assertEquals(
     outputs?.announcements,
-    // @ts-ignore 'error' property not required in fn output
     [{
       channel_id: "C12345678",
       success: true,
