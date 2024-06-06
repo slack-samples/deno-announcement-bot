@@ -60,7 +60,7 @@ export const buildDraftBlocks = (
             {
               "text": {
                 "type": "plain_text",
-                "text": "Discard message",
+                "text": "Discard the draft message",
               },
               "value": "discard_message_overflow",
             },
