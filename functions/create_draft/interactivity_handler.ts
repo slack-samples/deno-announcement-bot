@@ -23,7 +23,8 @@ import DraftDatastore from "../../datastores/drafts.ts";
 
 export const openDraftEditView: BlockActionHandler<
   typeof CreateDraftFunction.definition
-> = async ({ body, action, client }) => {
+> = async ({ body, action, client, inputs }) => {
+  // If the user selects to edit the message
   if (action.selected_option.value == "edit_message_overflow") {
     const id = action.block_id;
 
@@ -70,6 +71,40 @@ export const openDraftEditView: BlockActionHandler<
       await client.functions.completeError({
         function_execution_id: body.function_data.execution_id,
         error: draftEditModalErrorMsg,
+      });
+    }
+  }
+  // If the user selects to discard the message
+  if (action.selected_option.value == "discard_message_overflow") {
+    const id = action.block_id;
+    const thread_ts = body.message?.ts || "";
+
+    // Delete the draft message from the Channel
+    const updateResp = await client.chat.delete({
+      channel: inputs.channel,
+      ts: thread_ts,
+    });
+
+    if (!updateResp.ok) {
+      const updateDraftPreviewErrorMsg =
+        `Error Deleting the message: ${thread_ts} in channel ${inputs.channel}. Contact the app maintainers with the following - (Error detail: ${updateResp.error})`;
+      console.log(updateDraftPreviewErrorMsg);
+    }
+
+    // Delete the draft from the drafts Datstore
+    const deleteResp = await client.apps.datastore.delete({
+      datastore: DraftDatastore.name,
+      id: id,
+    });
+
+    if (!deleteResp.ok) {
+      const deleteDraftErrorMsg =
+        `Error deleting draft with id ${id}. Contact the app maintainers with the following - (Error detail: ${deleteResp.error})`;
+      console.log(deleteDraftErrorMsg);
+
+      await client.functions.completeError({
+        function_execution_id: body.function_data.execution_id,
+        error: deleteDraftErrorMsg,
       });
     }
   }
