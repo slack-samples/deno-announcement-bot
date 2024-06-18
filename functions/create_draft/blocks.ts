@@ -57,6 +57,13 @@ export const buildDraftBlocks = (
               },
               "value": "edit_message_overflow",
             },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Discard the draft message",
+              },
+              "value": "discard_message_overflow",
+            },
           ],
           "action_id": "preview_overflow",
         },

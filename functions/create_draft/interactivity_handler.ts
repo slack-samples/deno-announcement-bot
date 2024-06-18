@@ -23,8 +23,9 @@ import DraftDatastore from "../../datastores/drafts.ts";
 
 export const openDraftEditView: BlockActionHandler<
   typeof CreateDraftFunction.definition
-> = async ({ body, action, client }) => {
-  if (action.selected_option.value == "edit_message_overflow") {
+> = async ({ body, action, client, inputs }) => {
+  // If the user selects to edit the draft message
+  if (action.selected_option.value === "edit_message_overflow") {
     const id = action.block_id;
 
     // Get the draft
@@ -37,10 +38,11 @@ export const openDraftEditView: BlockActionHandler<
       },
     );
 
+    // If the GET datastore record operation fails, log the error and complete the function with an error
     if (!putResp.ok) {
       const draftGetErrorMsg =
         `Error getting draft with id ${id}. Contact the app maintainers with the following - (Error detail: ${putResp.error})`;
-      console.log(draftGetErrorMsg);
+      console.error(draftGetErrorMsg);
 
       await client.functions.completeError({
         function_execution_id: body.function_data.execution_id,
@@ -65,11 +67,55 @@ export const openDraftEditView: BlockActionHandler<
     if (!viewsOpenResp.ok) {
       const draftEditModalErrorMsg =
         `Error opening up the draft edit modal view. Contact the app maintainers with the following - (Error detail: ${viewsOpenResp.error}`;
-      console.log(draftEditModalErrorMsg);
+      console.error(draftEditModalErrorMsg);
 
       await client.functions.completeError({
         function_execution_id: body.function_data.execution_id,
         error: draftEditModalErrorMsg,
+      });
+    }
+  }
+
+  // If the user selects to discard the draft message
+  if (action.selected_option.value === "discard_message_overflow") {
+    const id = action.block_id;
+    const message_ts = body.message?.ts || "";
+
+    try {
+      // Delete the draft from the 'drafts' Datstore
+      const deleteResp = await client.apps.datastore.delete({
+        datastore: DraftDatastore.name,
+        id: id,
+      });
+
+      // If the DELETE datastore record operation fails, throw an error
+      if (!deleteResp.ok) {
+        const deleteDraftErrorMsg =
+          `Error deleting draft with id ${id}. Contact the app maintainers with the following - (Error detail: ${deleteResp.error})`;
+        throw new Error(deleteDraftErrorMsg);
+      }
+
+      // If message_ts isn't empty, Delete the draft message from the Draft Channel
+      if (message_ts) {
+        const updateResp = await client.chat.delete({
+          channel: inputs.channel,
+          ts: message_ts,
+        });
+
+        // If the DELETE message operation fails, throw an error
+        if (!updateResp.ok) {
+          const updateDraftPreviewErrorMsg =
+            `Error deleting the draft message: ${message_ts} in channel ${inputs.channel}. Contact the app maintainers with the following - (Error detail: ${updateResp.error})`;
+          throw new Error(updateDraftPreviewErrorMsg);
+        }
+      }
+      // If the DELETE datastore record or Slack Message operations fail, log the error and complete the function with an error
+    } catch (error) {
+      console.error(error);
+
+      await client.functions.completeError({
+        function_execution_id: body.function_data.execution_id,
+        error: "Error discarding draft",
       });
     }
   }
