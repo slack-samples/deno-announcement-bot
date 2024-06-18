@@ -81,35 +81,46 @@ export const openDraftEditView: BlockActionHandler<
     const id = action.block_id;
     const message_ts = body.message?.ts || "";
 
-    // Delete the draft from the 'drafts' Datstore
-    const deleteResp = await client.apps.datastore.delete({
-      datastore: DraftDatastore.name,
-      id: id,
-    });
+    try {
+      // Delete the draft from the 'drafts' Datstore
+      const deleteResp = await client.apps.datastore.delete({
+        datastore: DraftDatastore.name,
+        id: id,
+      });
 
-    // If the DELETE datastore record operation fails, log the error and complete the function with an error
-    if (!deleteResp.ok) {
-      const deleteDraftErrorMsg =
-        `Error deleting draft with id ${id}. Contact the app maintainers with the following - (Error detail: ${deleteResp.error})`;
-      console.error(deleteDraftErrorMsg);
+      // If the DELETE datastore record operation fails, log the error and complete the function with an error
+      if (!deleteResp.ok) {
+        const deleteDraftErrorMsg =
+          `Error deleting draft with id ${id}. Contact the app maintainers with the following - (Error detail: ${deleteResp.error})`;
+        console.error(deleteDraftErrorMsg);
+
+        await client.functions.completeError({
+          function_execution_id: body.function_data.execution_id,
+          error: deleteDraftErrorMsg,
+        });
+      }
+
+      // If message_ts isn't empty, Delete the draft message from the Draft Channel
+      if (message_ts) {
+        const updateResp = await client.chat.delete({
+          channel: inputs.channel,
+          ts: message_ts,
+        });
+
+        // If the DELETE message operation fails, log the error
+        if (!updateResp.ok) {
+          const updateDraftPreviewErrorMsg =
+            `Error deleting the draft message: ${message_ts} in channel ${inputs.channel}. Contact the app maintainers with the following - (Error detail: ${updateResp.error})`;
+          console.error(updateDraftPreviewErrorMsg);
+        }
+      }
+    } catch (error) {
+      console.error(error);
 
       await client.functions.completeError({
         function_execution_id: body.function_data.execution_id,
-        error: deleteDraftErrorMsg,
+        error: "Error discarding draft",
       });
-    }
-
-    // Delete the draft message from the Draft Channel
-    const updateResp = await client.chat.delete({
-      channel: inputs.channel,
-      ts: message_ts,
-    });
-
-    // If the DELETE message operation fails, log the error and complete the function with an error
-    if (!updateResp.ok) {
-      const updateDraftPreviewErrorMsg =
-        `Error deleting the draft message: ${message_ts} in channel ${inputs.channel}. Contact the app maintainers with the following - (Error detail: ${updateResp.error})`;
-      console.error(updateDraftPreviewErrorMsg);
     }
   }
 };
