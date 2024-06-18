@@ -88,16 +88,11 @@ export const openDraftEditView: BlockActionHandler<
         id: id,
       });
 
-      // If the DELETE datastore record operation fails, log the error and complete the function with an error
+      // If the DELETE datastore record operation fails, throw an error
       if (!deleteResp.ok) {
         const deleteDraftErrorMsg =
           `Error deleting draft with id ${id}. Contact the app maintainers with the following - (Error detail: ${deleteResp.error})`;
-        console.error(deleteDraftErrorMsg);
-
-        await client.functions.completeError({
-          function_execution_id: body.function_data.execution_id,
-          error: deleteDraftErrorMsg,
-        });
+        throw new Error(deleteDraftErrorMsg);
       }
 
       // If message_ts isn't empty, Delete the draft message from the Draft Channel
@@ -107,13 +102,14 @@ export const openDraftEditView: BlockActionHandler<
           ts: message_ts,
         });
 
-        // If the DELETE message operation fails, log the error
+        // If the DELETE message operation fails, throw an error
         if (!updateResp.ok) {
           const updateDraftPreviewErrorMsg =
             `Error deleting the draft message: ${message_ts} in channel ${inputs.channel}. Contact the app maintainers with the following - (Error detail: ${updateResp.error})`;
-          console.error(updateDraftPreviewErrorMsg);
+          throw new Error(updateDraftPreviewErrorMsg);
         }
       }
+      // If the DELETE datastore record or Slack Message operations fail, log the error and complete the function with an error
     } catch (error) {
       console.error(error);
 
