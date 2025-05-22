@@ -1,10 +1,10 @@
 import { AnnouncementType } from "./types.ts";
-import {
+import type {
   Block,
   ContextBlock,
   KnownBlock,
   MrkdwnElement,
-} from "https://cdn.skypack.dev/@slack/types?dts";
+} from "@slack/types";
 
 // There is a Slack API limit of 50 blocks in a single message payload
 export const MAX_BLOCKS_LENGTH = 50;

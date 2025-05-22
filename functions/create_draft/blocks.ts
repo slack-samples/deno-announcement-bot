@@ -1,8 +1,4 @@
-import {
-  Block,
-  KnownBlock,
-  ModalView,
-} from "https://cdn.skypack.dev/@slack/types?dts";
+import type { Block, KnownBlock, ModalView } from "@slack/types";
 
 import {
   dividerBlock,

@@ -8,7 +8,7 @@ export default Manifest({
   name: "Announcement Bot",
   description: "Send an announcement to one or more channels",
   icon: "assets/icon.png",
-  outgoingDomains: ["cdn.skypack.dev"],
+  outgoingDomains: [],
   datastores: [DraftDatastore, AnnouncementDatastore],
   types: [AnnouncementCustomType],
   workflows: [
