@@ -8,7 +8,7 @@ import {
   prepareSendAnnouncement,
   saveDraftEditSubmission,
 } from "./interactivity_handler.ts";
-import { ChatPostMessageParams, DraftStatus } from "./types.ts";
+import { type ChatPostMessageParams, DraftStatus } from "./types.ts";
 
 import DraftDatastore from "../../datastores/drafts.ts";
 

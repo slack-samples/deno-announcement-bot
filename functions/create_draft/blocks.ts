@@ -40,7 +40,7 @@ export const buildDraftBlocks = (
             "type": "plain_text",
             "text": "Send announcement",
           },
-          "value": `send`,
+          "value": "send",
           "action_id": "send_button",
         },
         {
@@ -191,7 +191,7 @@ export const buildConfirmSendModal = (
         "text": {
           "type": "mrkdwn",
           "text":
-            `*Are you sure you want to send this announcement?* This cannot be undone!`,
+            "*Are you sure you want to send this announcement?* This cannot be undone!",
         },
       },
       {

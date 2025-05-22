@@ -7,7 +7,7 @@ import {
   SUCCESS_MATCHER,
   truncationBlock,
 } from "./blocks.ts";
-import { AnnouncementType } from "./types.ts";
+import type { AnnouncementType } from "./types.ts";
 
 // Setup
 const mockAnnouncementSummariesSuccess: AnnouncementType[] = [

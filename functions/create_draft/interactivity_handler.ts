@@ -1,9 +1,9 @@
-import {
+import type {
   BlockActionHandler,
   ViewSubmissionHandler,
 } from "deno-slack-sdk/functions/interactivity/types.ts";
 
-import { CreateDraftFunctionDefinition as CreateDraftFunction } from "./definition.ts";
+import type { CreateDraftFunctionDefinition as CreateDraftFunction } from "./definition.ts";
 import {
   buildConfirmSendModal,
   buildDraftBlocks,
