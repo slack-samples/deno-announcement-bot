@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.153.0/testing/asserts.ts";
+import { assertEquals } from "@std/assert";
 import type { ModalView } from "@slack/types";
 
 import { buildEditModal } from "./blocks.ts";

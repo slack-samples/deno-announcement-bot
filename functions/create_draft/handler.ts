@@ -60,7 +60,7 @@ export default SlackFunction(
     const params: ChatPostMessageParams = {
       channel: inputs.channel,
       blocks: blocks,
-      text: `An announcement draft was posted`,
+      text: "An announcement draft was posted",
     };
 
     if (inputs.icon) {
