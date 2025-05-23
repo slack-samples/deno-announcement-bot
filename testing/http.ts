@@ -133,10 +133,10 @@ export class StubFetch {
 
 /**
  * Creates a simple fetch stub that replaces the global fetch implementation with a mock.
- * 
+ *
  * @param stubRequestHandler - An object with a matches function and response to return
  * @returns A Stub object that can be used to restore the original fetch implementation
- * 
+ *
  * @example With 'using' statement
  * ```typescript
  * {
@@ -147,13 +147,13 @@ export class StubFetch {
  *     },
  *     response: new Response(JSON.stringify({ result: "success" }))
  *   });
- *   
+ *
  *   // Test code - stub automatically cleaned up at end of block scope
  * }
  * ```
  */
 export function stubFetch(
-  stubRequestHandler: StubRequestHandler
+  stubRequestHandler: StubRequestHandler,
 ): Stub {
   return stub(
     globalThis,

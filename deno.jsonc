@@ -7,6 +7,7 @@
       "external_auth",
       "functions",
       "manifest.ts",
+      "testing",
       "triggers",
       "types",
       "views",
@@ -19,6 +20,7 @@
       "external_auth",
       "functions",
       "manifest.ts",
+      "testing",
       "triggers",
       "types",
       "views",
@@ -27,7 +29,7 @@
   },
   "lock": false,
   "tasks": {
-    "test": "deno fmt --check && deno lint && deno test --allow-read -- --allow-none"
+    "test": "deno fmt --check && deno lint && deno test --allow-read"
   },
   "imports": {
     "@slack/types": "npm:@slack/types@^2.14.0",
