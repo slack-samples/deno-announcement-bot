@@ -1,6 +1,6 @@
 import { SlackFunctionTester } from "deno-slack-sdk/mod.ts";
 import { assertEquals, assertExists, assertFalse } from "@std/assert";
-import { StubFetch, stubFetch } from "../../test_utils.ts";
+import { StubFetch, stubFetch } from "../../testing/http.ts";
 
 import createDraft from "./handler.ts";
 import { CREATE_DRAFT_FUNCTION_CALLBACK_ID } from "./definition.ts";

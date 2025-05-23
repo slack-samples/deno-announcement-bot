@@ -1,6 +1,6 @@
 import { SlackFunctionTester } from "deno-slack-sdk/mod.ts";
 import { assertEquals, assertExists, assertStringIncludes } from "@std/assert";
-import { stubFetch } from "../../test_utils.ts";
+import { stubFetch } from "../../testing/http.ts";
 
 import postSummary from "./handler.ts";
 import { POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID } from "./definition.ts";
