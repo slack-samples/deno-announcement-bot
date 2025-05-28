@@ -1,6 +1,6 @@
 import { SlackFunctionTester } from "deno-slack-sdk/mod.ts";
 import { assertEquals, assertExists, assertStringIncludes } from "@std/assert";
-import { stubFetch } from "../../testing/http.ts";
+import { stub } from "@std/testing/mock";
 
 import postSummary from "./handler.ts";
 import { POST_ANNOUNCEMENT_FUNCTION_CALLBACK_ID } from "./definition.ts";
@@ -24,18 +24,23 @@ const inputs = {
 
 Deno.test("outputs received message ts correctly when chat.postMessage ok", async () => {
   // mock a successful response
-  using _fetchStub = stubFetch({
-    matches: (req) => {
-      assertEquals(req.url, "https://slack.com/api/chat.postMessage");
+  using _fetchStub = stub(
+    globalThis,
+    "fetch",
+    (url: string | URL | Request, options?: RequestInit) => {
+      const req = url instanceof Request ? url : new Request(url, options);
       assertEquals(req.method, "POST");
+      assertEquals(req.url, "https://slack.com/api/chat.postMessage");
+      return Promise.resolve(
+        new Response(
+          `{"ok": true, "ts": "1671571811.846939"}`,
+          {
+            status: 200,
+          },
+        ),
+      );
     },
-    response: new Response(
-      `{"ok": true, "ts": "1671571811.846939"}`,
-      {
-        status: 200,
-      },
-    ),
-  });
+  );
 
   const { outputs } = await postSummary(createContext({ inputs }));
 
@@ -51,18 +56,23 @@ Deno.test("outputs received message ts correctly when chat.postMessage ok", asyn
 
 Deno.test("outputs error message when chat.postMessage !ok", async () => {
   // Mock failed post message
-  using _fetchStub = stubFetch({
-    matches: (req) => {
-      assertEquals(req.url, "https://slack.com/api/chat.postMessage");
+  using _fetchStub = stub(
+    globalThis,
+    "fetch",
+    (url: string | URL | Request, options?: RequestInit) => {
+      const req = url instanceof Request ? url : new Request(url, options);
       assertEquals(req.method, "POST");
+      assertEquals(req.url, "https://slack.com/api/chat.postMessage");
+      return Promise.resolve(
+        new Response(
+          `{"ok": false, "error": "I am a teapot. I cannot chat.postMessage" }`,
+          {
+            status: 200,
+          },
+        ),
+      );
     },
-    response: new Response(
-      `{"ok": false, "error": "I am a teapot. I cannot chat.postMessage" }`,
-      {
-        status: 200,
-      },
-    ),
-  });
+  );
 
   const { error } = await postSummary(createContext({ inputs }));
   assertExists(error);
