@@ -1,9 +1,9 @@
-import {
+import type {
   Block,
   DividerBlock,
   KnownBlock,
   SectionBlock,
-} from "https://cdn.skypack.dev/@slack/types?dts";
+} from "@slack/types";
 /**
  * These are helper utilities that assemble Block Kit block
  * payloads needed for this prepareSendAnnouncement function

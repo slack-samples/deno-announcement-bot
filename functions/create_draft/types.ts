@@ -1,4 +1,4 @@
-import { Block, KnownBlock } from "https://cdn.skypack.dev/@slack/types?dts";
+import type { Block, KnownBlock } from "@slack/types";
 
 /**
  * Helpful types and structures

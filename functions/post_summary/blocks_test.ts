@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.153.0/testing/asserts.ts";
+import { assertEquals } from "@std/assert";
 
 import {
   buildSummaryBlocks,
@@ -7,7 +7,7 @@ import {
   SUCCESS_MATCHER,
   truncationBlock,
 } from "./blocks.ts";
-import { AnnouncementType } from "./types.ts";
+import type { AnnouncementType } from "./types.ts";
 
 // Setup
 const mockAnnouncementSummariesSuccess: AnnouncementType[] = [

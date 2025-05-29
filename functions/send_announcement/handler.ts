@@ -1,11 +1,14 @@
 import { SlackFunction } from "deno-slack-sdk/mod.ts";
-import { SlackAPIClient } from "deno-slack-sdk/types.ts";
+import type { SlackAPIClient } from "deno-slack-sdk/types.ts";
 
 import { PrepareSendAnnouncementFunctionDefinition } from "./definition.ts";
 import { buildAnnouncementBlocks, buildSentBlocks } from "./blocks.ts";
 
-import { AnnouncementType } from "../post_summary/types.ts";
-import { ChatPostMessageParams, DraftStatus } from "../create_draft/types.ts";
+import type { AnnouncementType } from "../post_summary/types.ts";
+import {
+  type ChatPostMessageParams,
+  DraftStatus,
+} from "../create_draft/types.ts";
 
 import DraftDatastore from "../../datastores/drafts.ts";
 import AnnouncementsDatastore from "../../datastores/announcements.ts";
@@ -34,7 +37,7 @@ export default SlackFunction(
       const params: ChatPostMessageParams = {
         channel: channel,
         blocks: blocks,
-        text: `An announcement was posted`,
+        text: "An announcement was posted",
       };
 
       if (inputs.icon) {

@@ -1,10 +1,10 @@
-import { AnnouncementType } from "./types.ts";
-import {
+import type { AnnouncementType } from "./types.ts";
+import type {
   Block,
   ContextBlock,
   KnownBlock,
   MrkdwnElement,
-} from "https://cdn.skypack.dev/@slack/types?dts";
+} from "@slack/types";
 
 // There is a Slack API limit of 50 blocks in a single message payload
 export const MAX_BLOCKS_LENGTH = 50;
@@ -28,7 +28,7 @@ export const buildSummaryBlocks = (
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": `*Summary:*`,
+        "text": "*Summary:*",
       },
     },
   ];
@@ -37,7 +37,7 @@ export const buildSummaryBlocks = (
   for (const announcement of announcementSummaries) {
     // If we have reached max blocks length (minus 1) add a final block
     // telling users that some announcement links are being truncated
-    if (blocks.length == MAX_BLOCKS_LENGTH - 1) {
+    if (blocks.length === MAX_BLOCKS_LENGTH - 1) {
       blocks.push(
         truncationBlock(),
       );
