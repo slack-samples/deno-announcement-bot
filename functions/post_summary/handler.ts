@@ -1,4 +1,4 @@
-import { SlackFunction } from "deno-slack-sdk/mod.ts";
+import { SlackFunction } from "@slack/sdk";
 
 import { buildSummaryBlocks } from "./blocks.ts";
 import { PostSummaryFunctionDefinition } from "./definition.ts";
