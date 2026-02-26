@@ -31,7 +31,7 @@
   },
   "imports": {
     "@slack/api": "jsr:@slack/api@2.9.0",
-    "@slack/sdk": "jsr:@slack/sdk@2.15.2-dev.1",
+    "@slack/sdk": "jsr:@slack/sdk@2.15.2",
     "@slack/sdk/functions/interactivity/types": "https://raw.githubusercontent.com/slackapi/deno-slack-sdk/main/src/functions/interactivity/types.ts",
     "@slack/types": "npm:@slack/types@^2.18.0",
     "@std/testing": "jsr:@std/testing@^1.0.16",
