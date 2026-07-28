@@ -1,4 +1,4 @@
-import { SlackFunctionTester } from "deno-slack-sdk/mod.ts";
+import { SlackFunctionTester } from "@slack/sdk";
 import { assertEquals, assertExists, assertFalse } from "@std/assert";
 
 import createDraft from "./handler.ts";
