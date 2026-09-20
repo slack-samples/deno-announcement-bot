@@ -14,11 +14,10 @@ USER slackdev
 
 # Install the project runtime
 RUN curl -fsSL https://deno.land/install.sh | sh
-RUN export DENO_INSTALL="/home/slackdev/.deno"
-RUN export PATH="$DENO_INSTALL/bin:$PATH"
+ENV PATH="/home/slackdev/.deno/bin:$PATH"
 
 # Set the working directory
 WORKDIR /workspaces
 
 # Install the Slack CLI
-RUN curl -fsSL https://downloads.slack-edge.com/slack-cli/install.sh | bash -s -- -d
+RUN curl -fsSL https://downloads.slack-edge.com/slack-cli/install.sh | bash
