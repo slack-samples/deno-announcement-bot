@@ -1,7 +1,7 @@
 import type {
   BlockActionHandler,
   ViewSubmissionHandler,
-} from "deno-slack-sdk/functions/interactivity/types.ts";
+} from "@slack/sdk/functions/interactivity/types";
 
 import type { CreateDraftFunctionDefinition as CreateDraftFunction } from "./definition.ts";
 import {

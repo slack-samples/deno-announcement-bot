@@ -1,4 +1,4 @@
-import { DefineType, Schema } from "deno-slack-sdk/mod.ts";
+import { DefineType, Schema } from "@slack/sdk";
 
 /**
  * This is a Slack Custom type for an Announcement

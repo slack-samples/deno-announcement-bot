@@ -1,4 +1,4 @@
-import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
+import { DefineWorkflow, Schema } from "@slack/sdk";
 import { CreateDraftFunctionDefinition } from "../functions/create_draft/definition.ts";
 import { PostSummaryFunctionDefinition } from "../functions/post_summary/definition.ts";
 import { PrepareSendAnnouncementFunctionDefinition } from "../functions/send_announcement/definition.ts";

@@ -1,4 +1,4 @@
-import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
+import { DefineFunction, Schema } from "@slack/sdk";
 
 export const CREATE_DRAFT_FUNCTION_CALLBACK_ID = "create_draft";
 /**

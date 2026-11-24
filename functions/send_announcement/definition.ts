@@ -1,4 +1,4 @@
-import { DefineFunction, Schema } from "deno-slack-sdk/mod.ts";
+import { DefineFunction, Schema } from "@slack/sdk";
 import { AnnouncementCustomType } from "../post_summary/types.ts";
 
 export const SEND_ANNOUNCEMENT_FUNCTION_CALLBACK_ID = "send_announcement";
